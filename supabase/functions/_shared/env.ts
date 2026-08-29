@@ -1,11 +1,11 @@
 // Server-side configuration.
 //
-// Same discipline as the three placeholder constants in `src/lib/spl.ts`, and
-// deliberately the same three values: the $xNFT mint, the treasury wallet and the
-// dev wallet. An address that does not exist yet is empty, and every path that
-// would need it returns `not-configured` instead of guessing. $xNFT is not
-// deployed at the time of writing, so the honest default is "unset" and the
-// honest response to a call is a 503 that says so.
+// Same discipline as the placeholder constants in `src/lib/evm.ts`, and
+// deliberately the same three values: the $XAS token, the treasury wallet and
+// the dev wallet. An address that does not exist yet is empty, and every path that
+// would need it returns `not-configured` instead of guessing. $XAS is not
+// deployed on Robinhood Chain at the time of writing, so the honest default is
+// "unset" and the honest response to a call is a 503 that says so.
 //
 // Nothing here has a fallback value for a real address. There is no program id
 // any more — the old `XNFT_PROGRAM_ID` gate is gone with the program — and what
@@ -13,19 +13,19 @@
 // asks "did our program run?", it asks "did exactly these tokens move between
 // exactly these accounts?", which nothing but the real transfer can satisfy.
 //
-// ONE GATE, THREE ADDRESSES, matching isConfigured() in src/lib/spl.ts. Every
-// path here touches at least two of them — recognising a mint needs the mint and
+// ONE GATE, THREE ADDRESSES, matching isMintConfigured() in src/lib/evm.ts. Every
+// path here touches at least two of them — recognising a mint needs the token and
 // the treasury, settling a payout needs the treasury and the dev wallet — so a
 // half-configured backend could only ever produce a reading nobody chose.
 import { isAddress } from './evm.ts'
 import { fnError, isFnError, type FnError } from './http.ts'
 
 export interface FunctionConfig {
-  /** Solana JSON-RPC endpoint. Public RPC rate-limits hard; set a real one. */
+  /** Robinhood Chain JSON-RPC endpoint (chain id 4663). */
   rpcUrl: string
-  /** Base58 mint address of $xNFT. The only mint any of these functions will index. */
+  /** 0x contract address of the $XAS ERC-20. The only token these functions will index. */
   xnftMint: string
-  /** The operator's treasury wallet. Fees land in its associated $xNFT account. */
+  /** The operator's treasury wallet. */
   treasury: string
   /** Where a claim sends fees. Read from here, never from a request body. */
   devWallet: string
@@ -55,7 +55,7 @@ export interface FunctionConfig {
  * The subset of the configuration that has nothing to do with the chain.
  *
  * Most of the functions added after the mint — profiles, the marketplace, the
- * social layer, the SOL payout queue — touch no Solana address at all. Making
+ * social layer, the payout queue — touch no chain address at all. Making
  * them call `loadConfig()` would gate the whole social layer behind a treasury
  * address nobody has set yet, which is a refusal with no hazard behind it and
  * exactly the kind of over-broad gate that teaches people to set placeholder
@@ -101,16 +101,23 @@ function requireAddress(name: string, purpose: string): string | FnError {
  * environment.
  */
 export function loadConfig(): FunctionConfig | FnError {
-  const rpcUrl = read('SOLANA_RPC_URL')
+  // CHAIN_RPC_URL, not SOLANA_RPC_URL. Renamed on the Robinhood Chain port
+  // rather than left alone: a variable named for the wrong chain is how an
+  // operator ends up pasting a Solana endpoint into a deployment that reads
+  // EVM receipts, and every verification would then fail in a way that looks
+  // like the buyer's fault. No fallback to the old name — this project has
+  // never had a secret under it, and a silent alias would keep the wrong name
+  // alive forever.
+  const rpcUrl = read('CHAIN_RPC_URL')
   if (!rpcUrl) {
-    return fnError('not-configured', 'SOLANA_RPC_URL is not set. No chain read was attempted.')
+    return fnError('not-configured', 'CHAIN_RPC_URL is not set. No chain read was attempted.')
   }
   // A non-http endpoint would fail deep inside fetch with a confusing message.
   if (!/^https?:\/\//i.test(rpcUrl)) {
-    return fnError('not-configured', 'SOLANA_RPC_URL must be an http(s) endpoint.')
+    return fnError('not-configured', 'CHAIN_RPC_URL must be an http(s) endpoint.')
   }
 
-  const xnftMint = requireAddress('XNFT_MINT_ADDRESS', 'no transfer can be attributed to $xNFT')
+  const xnftMint = requireAddress('XAS_TOKEN_ADDRESS', 'no transfer can be attributed to $XAS')
   if (typeof xnftMint !== 'string') return xnftMint
 
   const treasury = requireAddress('TREASURY_ADDRESS', 'no fee leg can be recognised')

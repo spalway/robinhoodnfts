@@ -19,7 +19,7 @@
 -- Run this ENTIRE file in the Supabase SQL Editor, then run
 -- protocol_config.sql afterwards.
 --
--- This is 18 migrations concatenated in dependency order. The order matters:
+-- This is 19 migrations concatenated in dependency order. The order matters:
 -- later sections reference tables earlier ones create, so do not reorder or
 -- run parts of it out of sequence.
 --
@@ -49,13 +49,14 @@
 --   16. 20260806091100_rls_policies.sql
 --   17. 20260808120000_xnft_backend.sql
 --   18. 20260829120000_xnft_issue_serial.sql
+--   19. 20260829130000_lock_operator_functions.sql
 --
 -- =========================================================================
 
 
 
 -- =========================================================================
--- SECTION 1 of 18 — 20260805120000_protocol_tables.sql
+-- SECTION 1 of 19 — 20260805120000_protocol_tables.sql
 -- =========================================================================
 
 -- xNFTs index — tables.
@@ -437,7 +438,7 @@ comment on column public.payouts.expires_at_block_height is
 
 
 -- =========================================================================
--- SECTION 2 of 18 — 20260805120100_writer_functions.sql
+-- SECTION 2 of 19 — 20260805120100_writer_functions.sql
 -- =========================================================================
 
 -- xNFTs index — the write path.
@@ -802,7 +803,7 @@ grant execute on function public.touch_payout(text) to service_role;
 
 
 -- =========================================================================
--- SECTION 3 of 18 — 20260805120200_rls_policies.sql
+-- SECTION 3 of 19 — 20260805120200_rls_policies.sql
 -- =========================================================================
 
 -- xNFTs index — row level security.
@@ -1002,7 +1003,7 @@ create policy "payouts accept no client delete" on public.payouts
 
 
 -- =========================================================================
--- SECTION 4 of 18 — 20260805120300_rent_closes_one_listing.sql
+-- SECTION 4 of 19 — 20260805120300_rent_closes_one_listing.sql
 -- =========================================================================
 
 -- xNFTs index — a rental closes the listing that was rented, and only that one.
@@ -1172,7 +1173,7 @@ grant execute on function public.record_rent(text, integer, bigint, timestamptz,
 
 
 -- =========================================================================
--- SECTION 5 of 18 — 20260806090000_mint_fee_retired.sql
+-- SECTION 5 of 19 — 20260806090000_mint_fee_retired.sql
 -- =========================================================================
 
 -- xNFTs index — the mint fee is gone, and the schema stops being able to hold one.
@@ -1286,7 +1287,7 @@ drop function if exists public.record_mint(text, integer, bigint, timestamptz, t
 
 
 -- =========================================================================
--- SECTION 6 of 18 — 20260806090100_collection.sql
+-- SECTION 6 of 19 — 20260806090100_collection.sql
 -- =========================================================================
 
 -- xNFTs index — the collection itself.
@@ -1881,7 +1882,7 @@ $$;
 
 
 -- =========================================================================
--- SECTION 7 of 18 — 20260806090200_seed_reveal_order.sql
+-- SECTION 7 of 19 — 20260806090200_seed_reveal_order.sql
 -- =========================================================================
 
 -- xNFTs index — seed: the reveal permutation.

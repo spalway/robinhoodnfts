@@ -5,7 +5,7 @@
 -- Run this ENTIRE file in the Supabase SQL Editor, then run
 -- protocol_config.sql afterwards.
 --
--- This is 18 migrations concatenated in dependency order. The order matters:
+-- This is 19 migrations concatenated in dependency order. The order matters:
 -- later sections reference tables earlier ones create, so do not reorder or
 -- run parts of it out of sequence.
 --
@@ -35,13 +35,14 @@
 --   16. 20260806091100_rls_policies.sql
 --   17. 20260808120000_xnft_backend.sql
 --   18. 20260829120000_xnft_issue_serial.sql
+--   19. 20260829130000_lock_operator_functions.sql
 --
 -- =========================================================================
 
 
 
 -- =========================================================================
--- SECTION 1 of 18 — 20260805120000_protocol_tables.sql
+-- SECTION 1 of 19 — 20260805120000_protocol_tables.sql
 -- =========================================================================
 
 -- xNFTs index — tables.
@@ -423,7 +424,7 @@ comment on column public.payouts.expires_at_block_height is
 
 
 -- =========================================================================
--- SECTION 2 of 18 — 20260805120100_writer_functions.sql
+-- SECTION 2 of 19 — 20260805120100_writer_functions.sql
 -- =========================================================================
 
 -- xNFTs index — the write path.
@@ -788,7 +789,7 @@ grant execute on function public.touch_payout(text) to service_role;
 
 
 -- =========================================================================
--- SECTION 3 of 18 — 20260805120200_rls_policies.sql
+-- SECTION 3 of 19 — 20260805120200_rls_policies.sql
 -- =========================================================================
 
 -- xNFTs index — row level security.
@@ -988,7 +989,7 @@ create policy "payouts accept no client delete" on public.payouts
 
 
 -- =========================================================================
--- SECTION 4 of 18 — 20260805120300_rent_closes_one_listing.sql
+-- SECTION 4 of 19 — 20260805120300_rent_closes_one_listing.sql
 -- =========================================================================
 
 -- xNFTs index — a rental closes the listing that was rented, and only that one.
@@ -1158,7 +1159,7 @@ grant execute on function public.record_rent(text, integer, bigint, timestamptz,
 
 
 -- =========================================================================
--- SECTION 5 of 18 — 20260806090000_mint_fee_retired.sql
+-- SECTION 5 of 19 — 20260806090000_mint_fee_retired.sql
 -- =========================================================================
 
 -- xNFTs index — the mint fee is gone, and the schema stops being able to hold one.
@@ -1272,7 +1273,7 @@ drop function if exists public.record_mint(text, integer, bigint, timestamptz, t
 
 
 -- =========================================================================
--- SECTION 6 of 18 — 20260806090100_collection.sql
+-- SECTION 6 of 19 — 20260806090100_collection.sql
 -- =========================================================================
 
 -- xNFTs index — the collection itself.
@@ -1867,7 +1868,7 @@ $$;
 
 
 -- =========================================================================
--- SECTION 7 of 18 — 20260806090200_seed_reveal_order.sql
+-- SECTION 7 of 19 — 20260806090200_seed_reveal_order.sql
 -- =========================================================================
 
 -- xNFTs index — seed: the reveal permutation.
@@ -2138,7 +2139,7 @@ $$;
 
 
 -- =========================================================================
--- SECTION 8 of 18 — 20260806090300_seed_xployees.sql
+-- SECTION 8 of 19 — 20260806090300_seed_xployees.sql
 -- =========================================================================
 
 -- xNFTs index — seed: all 5,000 xployees.
@@ -7263,7 +7264,7 @@ $$;
 
 
 -- =========================================================================
--- SECTION 9 of 18 — 20260806090400_seed_xployee_skills.sql
+-- SECTION 9 of 19 — 20260806090400_seed_xployee_skills.sql
 -- =========================================================================
 
 -- xNFTs index — seed: which desks each xployee works.
@@ -15280,7 +15281,7 @@ comment on column public.xployees.apy is
 
 
 -- =========================================================================
--- SECTION 10 of 18 — 20260806090500_seed_xnet_genesis.sql
+-- SECTION 10 of 19 — 20260806090500_seed_xnet_genesis.sql
 -- =========================================================================
 
 -- xNFTs index — seed: the genesis holding.
@@ -15377,7 +15378,7 @@ revoke all on function public.assign_genesis_crew() from anon, authenticated;
 
 
 -- =========================================================================
--- SECTION 11 of 18 — 20260806090600_mint_control.sql
+-- SECTION 11 of 19 — 20260806090600_mint_control.sql
 -- =========================================================================
 
 -- xNFTs index — minting: the rate limit, the reservation, and the serial dealer.
@@ -16295,7 +16296,7 @@ grant execute on function public.serial_label(bigint) to public;
 
 
 -- =========================================================================
--- SECTION 12 of 18 — 20260806090700_identity.sql
+-- SECTION 12 of 19 — 20260806090700_identity.sql
 -- =========================================================================
 
 -- xNFTs index — identity: profiles, verified X handles, and wallet linking.
@@ -16901,7 +16902,7 @@ grant execute on function public.purge_wallet_link_challenges() to service_role;
 
 
 -- =========================================================================
--- SECTION 13 of 18 — 20260806090800_market_and_epochs.sql
+-- SECTION 13 of 19 — 20260806090800_market_and_epochs.sql
 -- =========================================================================
 
 -- xNFTs index — the simulated marketplace and the epoch ledger.
@@ -17690,7 +17691,7 @@ grant execute on function public.sim_fee_on(numeric, integer) to public;
 
 
 -- =========================================================================
--- SECTION 14 of 18 — 20260806090900_social.sql
+-- SECTION 14 of 19 — 20260806090900_social.sql
 -- =========================================================================
 
 -- xNFTs index — the social layer: friends, threads, messages, trade offers.
@@ -18380,7 +18381,7 @@ grant execute on function public.pair_key(text, text) to public;
 
 
 -- =========================================================================
--- SECTION 15 of 18 — 20260806091000_payout_requests.sql
+-- SECTION 15 of 19 — 20260806091000_payout_requests.sql
 -- =========================================================================
 
 -- xNFTs index — payout_requests: the SOL claim queue the admin desk works.
@@ -18851,7 +18852,7 @@ grant execute on function public.resolve_payout_request(uuid, text, text, text, 
 
 
 -- =========================================================================
--- SECTION 16 of 18 — 20260806091100_rls_policies.sql
+-- SECTION 16 of 19 — 20260806091100_rls_policies.sql
 -- =========================================================================
 
 -- xNFTs index — row level security for everything added since 20260805120200.
@@ -19304,7 +19305,7 @@ $$;
 
 
 -- =========================================================================
--- SECTION 17 of 18 — 20260808120000_xnft_backend.sql
+-- SECTION 17 of 19 — 20260808120000_xnft_backend.sql
 -- =========================================================================
 
 -- The backend the current frontend actually calls.
@@ -19780,7 +19781,7 @@ grant execute on function public.xnft_confirm_mint(text) to anon, authenticated;
 
 
 -- =========================================================================
--- SECTION 18 of 18 — 20260829120000_xnft_issue_serial.sql
+-- SECTION 18 of 19 — 20260829120000_xnft_issue_serial.sql
 -- =========================================================================
 
 -- xnft_issue_serial — deals one serial, after the payment is already proven.
@@ -19979,6 +19980,68 @@ begin
 
   if not has_function_privilege('service_role', 'public.xnft_issue_serial(text, text, text)', 'execute') then
     raise exception 'xnft_issue_serial is not callable by service_role — no mint could ever be credited';
+  end if;
+end;
+$$;
+
+
+-- =========================================================================
+-- SECTION 19 of 19 — 20260829130000_lock_operator_functions.sql
+-- =========================================================================
+
+-- Close two findings the Supabase security linter raised on the first build of
+-- this project's database. Neither is exploitable for theft; both are the kind
+-- of loose default that stops being harmless the moment something else is wrong.
+
+-- ---------------------------------------------------------------------------
+-- 1. assign_genesis_crew was an unauthenticated write endpoint
+-- ---------------------------------------------------------------------------
+-- It is SECURITY DEFINER and was executable by anon, which means anyone on the
+-- internet could POST /rest/v1/rpc/assign_genesis_crew and cause an UPDATE over
+-- public.genesis_crew.
+--
+-- The blast radius is genuinely small — it can only set `owner` to the
+-- dev_wallet already in protocol_config, so a caller cannot name a destination
+-- and cannot move a row to themselves. What they CAN do is run an operator's
+-- maintenance action at a time of their choosing, repeatedly.
+--
+-- Nothing in src/ or supabase/functions/ calls it. It is a console tool for the
+-- operator, so it gets the same treatment as xnft_issue_serial: service_role
+-- only. `from public` first, because EXECUTE is granted to PUBLIC by default and
+-- revoking from anon alone would leave that default in place.
+revoke execute on function public.assign_genesis_crew() from public;
+revoke execute on function public.assign_genesis_crew() from anon, authenticated;
+grant  execute on function public.assign_genesis_crew() to service_role;
+
+-- ---------------------------------------------------------------------------
+-- 2. touch_protocol_config had a mutable search_path
+-- ---------------------------------------------------------------------------
+-- The standard escalation shape: a function that resolves unqualified names at
+-- call time can be pointed at an attacker's schema by anyone able to set
+-- search_path, and this one fires as a trigger on the row that configures the
+-- protocol. Pinning it to '' forces every reference inside to be schema
+-- qualified, which is what every other function in this schema already does.
+alter function public.touch_protocol_config() set search_path = '';
+
+-- ---------------------------------------------------------------------------
+-- Prove both, rather than trusting that they took
+-- ---------------------------------------------------------------------------
+do $$
+begin
+  if has_function_privilege('anon', 'public.assign_genesis_crew()', 'execute')
+     or has_function_privilege('authenticated', 'public.assign_genesis_crew()', 'execute')
+  then
+    raise exception 'assign_genesis_crew is still reachable without service_role';
+  end if;
+
+  if not exists (
+    select 1 from pg_proc p
+      join pg_namespace n on n.oid = p.pronamespace
+     where n.nspname = 'public'
+       and p.proname = 'touch_protocol_config'
+       and p.proconfig @> array['search_path=']
+  ) then
+    raise exception 'touch_protocol_config still has a mutable search_path';
   end if;
 end;
 $$;

@@ -8,11 +8,20 @@
 //
 //   npx vite-node scripts/gen-genesis-seed.ts
 import { writeFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { collection, HIRED_COUNT } from '../src/lib/collection'
 import { serial } from '../src/lib/xployee'
 
-const OUT =
-  'C:/Users/skizp/crypto/new_projects/xnfts/supabase/migrations/20260806090500_seed_xnet_genesis.sql'
+// PATHS ARE REPO-RELATIVE, and that is load-bearing rather than tidiness. These
+// were three hardcoded absolute paths into new_projects/xnfts — the Solana
+// project this repo was forked FROM. Read paths meant the fork bundled the other
+// project's migrations; WRITE paths meant running `npm run sql:bundle` here
+// silently regenerated the other project's committed SQL, in a repo whose
+// database is live. Resolving from import.meta.url makes a fork operate on
+// itself, which is the only thing it should ever do.
+const OUT = fileURLToPath(
+  new URL('../supabase/migrations/20260806090500_seed_xnet_genesis.sql', import.meta.url),
+)
 
 /**
  * Placeholder owner.

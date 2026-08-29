@@ -187,22 +187,22 @@ comment on table public.skills is
   'Mirrors SKILLS in src/lib/skills.ts. The yield engine: an xployee''s apy is the mean of its held skills'' base_apy x proficiency.';
 
 insert into public.skills (id, label, desk, ticker, base_apy, weight) values
-('silicon','Silicon Analyst','Semis','NVDAx',0.092000,5),
-('platform','Platform Ops','Megacap Tech','AAPLx',0.074000,8),
-('cloud','Cloud Architect','Enterprise SW','MSFTx',0.071000,8),
-('ledger','Ledger Clerk','Financials','JPMx',0.063000,10),
-('rails','Card Rails','Payments','Vx',0.058000,10),
-('crude','Crude Desk','Energy','XOMx',0.081000,6),
-('grid','Grid Tech','Industrials','HONx',0.052000,11),
-('trial','Trial Nurse','Pharma','LLYx',0.067000,9),
-('claims','Claims Adjuster','Health Ins.','UNHx',0.059000,10),
-('shelf','Shelf Stocker','Staples','KOx',0.044000,13),
-('brand','Brand Manager','Consumer','PGx',0.046000,12),
-('ballast','Index Ballast','Broad Market','SPYx',0.040000,14),
-('bills','Bills Desk','T-Bills','TBLLx',0.048000,12),
-('vault','Vault Keeper','Gold','GLDx',0.032000,11),
-('teller','Chain Teller','Crypto Equity','COINx',0.126000,3),
-('degen','Treasury Degen','Crypto Proxy','MSTRx',0.141000,2);
+('silicon','Silicon Analyst','Semis','NVDA',0.092000,5),
+('platform','Platform Ops','Megacap Tech','AAPL',0.074000,8),
+('cloud','Cloud Architect','Enterprise SW','MSFT',0.071000,8),
+('ledger','Ledger Clerk','Fintech','SOFI',0.063000,10),
+('rails','Card Rails','Payments','FISV',0.058000,10),
+('crude','Crude Desk','Energy','XOM',0.081000,6),
+('grid','Grid Tech','Industrials','GE',0.052000,11),
+('trial','Trial Nurse','Pharma','LLY',0.067000,9),
+('claims','Claims Adjuster','Health Ins.','UNH',0.059000,10),
+('shelf','Shelf Stocker','Staples','COST',0.044000,13),
+('brand','Fulfilment Lead','E-Commerce','AMZN',0.046000,12),
+('ballast','Index Ballast','Broad Market','SPY',0.040000,14),
+('bills','Bills Desk','T-Bills','SGOV',0.048000,12),
+('vault','Vault Keeper','Gold','GLD',0.032000,11),
+('teller','Chain Teller','Crypto Equity','COIN',0.126000,3),
+('degen','Treasury Degen','Crypto Proxy','MSTR',0.141000,2);
 
 -- ---------------------------------------------------------------------------
 -- Trait vocabulary

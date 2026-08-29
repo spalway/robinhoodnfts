@@ -10,9 +10,19 @@
 // defines plpgsql functions full of them. Getting that wrong produces chunks
 // that are individually valid-looking and collectively broken.
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 
-const SRC = 'C:/Users/skizp/crypto/new_projects/xnfts/supabase/RUN-THIS-FIRST.sql'
-const OUT = 'C:/Users/skizp/crypto/new_projects/xnfts/supabase/sql-chunks'
+// PATHS ARE REPO-RELATIVE, and that is load-bearing rather than tidiness. These
+// were three hardcoded absolute paths into new_projects/xnfts — the Solana
+// project this repo was forked FROM. Read paths meant the fork bundled the other
+// project's migrations; WRITE paths meant running `npm run sql:bundle` here
+// silently regenerated the other project's committed SQL, in a repo whose
+// database is live. Resolving from import.meta.url makes a fork operate on
+// itself, which is the only thing it should ever do.
+const SUPABASE = fileURLToPath(new URL('../supabase/', import.meta.url))
+
+const SRC = `${SUPABASE}RUN-THIS-FIRST.sql`
+const OUT = `${SUPABASE}sql-chunks`
 
 /** Comfortably under the editor's limit, with room for the header. */
 const TARGET_BYTES = 150_000

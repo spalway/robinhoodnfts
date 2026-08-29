@@ -1,7 +1,17 @@
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 
-const DIR = 'C:/Users/skizp/crypto/new_projects/xnfts/supabase/migrations'
-const OUT = 'C:/Users/skizp/crypto/new_projects/xnfts/supabase/RUN-THIS-FIRST.sql'
+// PATHS ARE REPO-RELATIVE, and that is load-bearing rather than tidiness. These
+// were three hardcoded absolute paths into new_projects/xnfts — the Solana
+// project this repo was forked FROM. Read paths meant the fork bundled the other
+// project's migrations; WRITE paths meant running `npm run sql:bundle` here
+// silently regenerated the other project's committed SQL, in a repo whose
+// database is live. Resolving from import.meta.url makes a fork operate on
+// itself, which is the only thing it should ever do.
+const SUPABASE = fileURLToPath(new URL('../supabase/', import.meta.url))
+
+const DIR = `${SUPABASE}migrations`
+const OUT = `${SUPABASE}RUN-THIS-FIRST.sql`
 
 // protocol_config stays on its own: it is the row an operator edits and may want
 // to re-run independently, and bundling it would mean re-running a megabyte of
@@ -80,7 +90,7 @@ const cfgOut = `-- =============================================================
 
 ${cfg.trimEnd()}
 `
-writeFileSync('C:/Users/skizp/crypto/new_projects/xnfts/supabase/RUN-THIS-SECOND.sql', cfgOut)
+writeFileSync(`${SUPABASE}RUN-THIS-SECOND.sql`, cfgOut)
 
 console.log(`RUN-THIS-FIRST.sql   ${files.length} migrations, ${(out.length / 1024).toFixed(0)} kB`)
 console.log(`RUN-THIS-SECOND.sql  protocol_config, ${(cfgOut.length / 1024).toFixed(1)} kB`)

@@ -36,6 +36,8 @@ import { mintOrder, HIRED_COUNT, collection, serialForMint } from '../src/lib/co
 import { tierForId } from '../src/lib/tiers'
 import { GENESIS } from '../src/lib/accrual'
 import { networkWallets } from '../src/lib/network'
+import { SKILLS } from '../src/lib/skills'
+import { STOCKS } from '../src/lib/stocks'
 
 const DIR = new URL('./migrations/', import.meta.url)
 
@@ -263,6 +265,60 @@ describe('the 5,000 xployees in 20260806090300', () => {
     const columns = header.slice(header.indexOf('insert into public.xployees ('), header.indexOf(') values'))
     expect(columns).not.toMatch(/\bskills\b/)
     expect(columns).not.toMatch(/\bprincipal\b/)
+  })
+})
+
+/**
+ * The 16-row skill REGISTRY, as distinct from the 7,900 held-skill rows below.
+ *
+ * This test is here because its absence cost something. `public.skills` mirrors
+ * SKILLS in src/lib/skills.ts by hand, and when the roster moved from Backed's
+ * xStocks to Robinhood's own tokens the TypeScript was updated and the SQL was
+ * not. Every other seed table is checked against its generator, so the whole
+ * suite stayed green while the database would have served `NVDAx` and `JPMx` —
+ * a ticker with no token behind it and a company that is not on the chain — to
+ * anything reading desks from Postgres rather than from the bundle.
+ *
+ * Ids, weights and base_apy are the load-bearing half: `pickDistinct` walks
+ * SKILLS in order and selects by weight, so a disagreement there means the
+ * database and the browser deal different desks for the same xployee. Ticker,
+ * desk and label are display, and are checked for the same reason — they are
+ * exactly what drifted.
+ */
+describe('the skill registry in 20260806090100', () => {
+  const rows = tuples(valuesBlock(migration('20260806090100_collection.sql'), 'insert into public.skills ('))
+
+  it('has one row per skill, in SKILLS order', () => {
+    expect(rows).toHaveLength(SKILLS.length)
+    expect(rows.map((r) => r[0])).toEqual(SKILLS.map((s) => s.id))
+  })
+
+  it('agrees with SKILLS on every field', () => {
+    rows.forEach((row, i) => {
+      const skill = SKILLS[i]
+      expect({
+        id: row[0],
+        label: row[1],
+        desk: row[2],
+        ticker: row[3],
+        baseApy: Number(row[4]),
+        weight: Number(row[5]),
+      }).toEqual({
+        id: skill.id,
+        label: skill.label,
+        desk: skill.desk,
+        ticker: skill.ticker,
+        baseApy: skill.baseApy,
+        weight: skill.weight,
+      })
+    })
+  })
+
+  it('names only tickers that are real Robinhood Chain tokens', () => {
+    // The point of the whole roster change. A desk pointing at a symbol with no
+    // contract behind it prices at its reference forever and looks live.
+    const known = new Set(STOCKS.map((s) => s.symbol))
+    for (const skill of SKILLS) expect(known).toContain(skill.ticker)
   })
 })
 

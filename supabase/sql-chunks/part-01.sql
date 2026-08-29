@@ -19,7 +19,7 @@
 -- Run this ENTIRE file in the Supabase SQL Editor, then run
 -- protocol_config.sql afterwards.
 --
--- This is 16 migrations concatenated in dependency order. The order matters:
+-- This is 17 migrations concatenated in dependency order. The order matters:
 -- later sections reference tables earlier ones create, so do not reorder or
 -- run parts of it out of sequence.
 --
@@ -47,13 +47,14 @@
 --   14. 20260806090900_social.sql
 --   15. 20260806091000_payout_requests.sql
 --   16. 20260806091100_rls_policies.sql
+--   17. 20260808120000_xnft_backend.sql
 --
 -- =========================================================================
 
 
 
 -- =========================================================================
--- SECTION 1 of 16 — 20260805120000_protocol_tables.sql
+-- SECTION 1 of 17 — 20260805120000_protocol_tables.sql
 -- =========================================================================
 
 -- xNFTs index — tables.
@@ -435,7 +436,7 @@ comment on column public.payouts.expires_at_block_height is
 
 
 -- =========================================================================
--- SECTION 2 of 16 — 20260805120100_writer_functions.sql
+-- SECTION 2 of 17 — 20260805120100_writer_functions.sql
 -- =========================================================================
 
 -- xNFTs index — the write path.
@@ -800,7 +801,7 @@ grant execute on function public.touch_payout(text) to service_role;
 
 
 -- =========================================================================
--- SECTION 3 of 16 — 20260805120200_rls_policies.sql
+-- SECTION 3 of 17 — 20260805120200_rls_policies.sql
 -- =========================================================================
 
 -- xNFTs index — row level security.
@@ -1000,7 +1001,7 @@ create policy "payouts accept no client delete" on public.payouts
 
 
 -- =========================================================================
--- SECTION 4 of 16 — 20260805120300_rent_closes_one_listing.sql
+-- SECTION 4 of 17 — 20260805120300_rent_closes_one_listing.sql
 -- =========================================================================
 
 -- xNFTs index — a rental closes the listing that was rented, and only that one.
@@ -1170,7 +1171,7 @@ grant execute on function public.record_rent(text, integer, bigint, timestamptz,
 
 
 -- =========================================================================
--- SECTION 5 of 16 — 20260806090000_mint_fee_retired.sql
+-- SECTION 5 of 17 — 20260806090000_mint_fee_retired.sql
 -- =========================================================================
 
 -- xNFTs index — the mint fee is gone, and the schema stops being able to hold one.
@@ -1284,7 +1285,7 @@ drop function if exists public.record_mint(text, integer, bigint, timestamptz, t
 
 
 -- =========================================================================
--- SECTION 6 of 16 — 20260806090100_collection.sql
+-- SECTION 6 of 17 — 20260806090100_collection.sql
 -- =========================================================================
 
 -- xNFTs index — the collection itself.
@@ -1476,22 +1477,22 @@ comment on table public.skills is
   'Mirrors SKILLS in src/lib/skills.ts. The yield engine: an xployee''s apy is the mean of its held skills'' base_apy x proficiency.';
 
 insert into public.skills (id, label, desk, ticker, base_apy, weight) values
-('silicon','Silicon Analyst','Semis','NVDAx',0.092000,5),
-('platform','Platform Ops','Megacap Tech','AAPLx',0.074000,8),
-('cloud','Cloud Architect','Enterprise SW','MSFTx',0.071000,8),
-('ledger','Ledger Clerk','Financials','JPMx',0.063000,10),
-('rails','Card Rails','Payments','Vx',0.058000,10),
-('crude','Crude Desk','Energy','XOMx',0.081000,6),
-('grid','Grid Tech','Industrials','HONx',0.052000,11),
-('trial','Trial Nurse','Pharma','LLYx',0.067000,9),
-('claims','Claims Adjuster','Health Ins.','UNHx',0.059000,10),
-('shelf','Shelf Stocker','Staples','KOx',0.044000,13),
-('brand','Brand Manager','Consumer','PGx',0.046000,12),
-('ballast','Index Ballast','Broad Market','SPYx',0.040000,14),
-('bills','Bills Desk','T-Bills','TBLLx',0.048000,12),
-('vault','Vault Keeper','Gold','GLDx',0.032000,11),
-('teller','Chain Teller','Crypto Equity','COINx',0.126000,3),
-('degen','Treasury Degen','Crypto Proxy','MSTRx',0.141000,2);
+('silicon','Silicon Analyst','Semis','NVDA',0.092000,5),
+('platform','Platform Ops','Megacap Tech','AAPL',0.074000,8),
+('cloud','Cloud Architect','Enterprise SW','MSFT',0.071000,8),
+('ledger','Ledger Clerk','Fintech','SOFI',0.063000,10),
+('rails','Card Rails','Payments','FISV',0.058000,10),
+('crude','Crude Desk','Energy','XOM',0.081000,6),
+('grid','Grid Tech','Industrials','GE',0.052000,11),
+('trial','Trial Nurse','Pharma','LLY',0.067000,9),
+('claims','Claims Adjuster','Health Ins.','UNH',0.059000,10),
+('shelf','Shelf Stocker','Staples','COST',0.044000,13),
+('brand','Fulfilment Lead','E-Commerce','AMZN',0.046000,12),
+('ballast','Index Ballast','Broad Market','SPY',0.040000,14),
+('bills','Bills Desk','T-Bills','SGOV',0.048000,12),
+('vault','Vault Keeper','Gold','GLD',0.032000,11),
+('teller','Chain Teller','Crypto Equity','COIN',0.126000,3),
+('degen','Treasury Degen','Crypto Proxy','MSTR',0.141000,2);
 
 -- ---------------------------------------------------------------------------
 -- Trait vocabulary
@@ -1879,7 +1880,7 @@ $$;
 
 
 -- =========================================================================
--- SECTION 7 of 16 — 20260806090200_seed_reveal_order.sql
+-- SECTION 7 of 17 — 20260806090200_seed_reveal_order.sql
 -- =========================================================================
 
 -- xNFTs index — seed: the reveal permutation.

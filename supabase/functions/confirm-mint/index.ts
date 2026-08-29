@@ -57,7 +57,7 @@ Deno.serve(
     const body = await readJsonBody(request)
     if (isFnError(body)) return errorResponse(body)
 
-    const config = loadConfig()
+    const config = await loadConfig()
     if (isFnError(config)) return errorResponse(config)
 
     // `signature` is the field name the frontend has always posted. It carries

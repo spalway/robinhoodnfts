@@ -20034,12 +20034,18 @@ begin
     raise exception 'assign_genesis_crew is still reachable without service_role';
   end if;
 
+  -- `search_path=""`, with the quotes, is how Postgres stores an EMPTY search
+  -- path in proconfig. The first version of this check looked for
+  -- `search_path=` and failed the migration against a database where the ALTER
+  -- above had just succeeded. Matching the empty form exactly also keeps the
+  -- assertion honest in the other direction: `search_path=public` would satisfy
+  -- a prefix match while leaving the function resolving unqualified names.
   if not exists (
     select 1 from pg_proc p
       join pg_namespace n on n.oid = p.pronamespace
      where n.nspname = 'public'
        and p.proname = 'touch_protocol_config'
-       and p.proconfig @> array['search_path=']
+       and p.proconfig @> array['search_path=""']
   ) then
     raise exception 'touch_protocol_config still has a mutable search_path';
   end if;

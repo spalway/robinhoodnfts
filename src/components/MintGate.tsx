@@ -75,7 +75,7 @@ export function MintGate({ onMinted }: { onMinted: (serial: number | null) => vo
 
       <div className="space-y-1.5 text-[11px]">
         <Row label="You pay">
-          <Money>{num(status?.priceTokens ?? Number(MINT_BURN))} $XAS</Money>
+          <Money>{num(status?.priceTokens ?? Number(MINT_BURN))} $XCs</Money>
         </Row>
         <Row label="Sent to">
           {status?.devWallet ? (
@@ -87,12 +87,12 @@ export function MintGate({ onMinted }: { onMinted: (serial: number | null) => vo
           )}
         </Row>
         <Row label="You must hold">
-          <span className="tabular-nums">{num(holdRequired)} $XAS</span>
+          <span className="tabular-nums">{num(holdRequired)} $XCs</span>
         </Row>
         <Row label="Your balance">
           {balance ? (
             <span className={`mono tabular-nums ${holdsEnough ? '' : 'text-down'}`}>
-              {num(balance.uiAmount)} $XAS
+              {num(balance.uiAmount)} $XCs
             </span>
           ) : (
             <span className="text-ink-faint">—</span>
@@ -149,7 +149,14 @@ export function MintGate({ onMinted }: { onMinted: (serial: number | null) => vo
                   ? 'Checking balance…'
                   : mint.stage === 'done'
                     ? 'Minted'
-                    : `Mint — ${num(status?.priceTokens ?? Number(MINT_BURN))} $XAS`}
+                    : (
+                        <>
+                          {/* keep-case: Button carries `.ui`, which uppercases
+                              its label. The ticker's trailing lowercase s is
+                              part of the name — without this it reads $XCS. */}
+                          Mint — <span className="keep-case">{num(status?.priceTokens ?? Number(MINT_BURN))} $XCs</span>
+                        </>
+                      )}
         </Button>
         {address ? (
           <button onClick={() => void mint.refresh()} className="text-[10px] text-ink-mute underline">
@@ -202,8 +209,8 @@ function GateNote({
   if (priceMismatch) {
     return (
       <p className={`${base} text-down`}>
-        The configured mint price ({num(status.priceTokens)} $XAS) does not match what this build
-        sends ({num(Number(MINT_BURN))} $XAS). Minting is disabled until they agree — paying the
+        The configured mint price ({num(status.priceTokens)} $XCs) does not match what this build
+        sends ({num(Number(MINT_BURN))} $XCs). Minting is disabled until they agree — paying the
         wrong amount would be refused after the tokens had already left.
       </p>
     )
@@ -238,7 +245,7 @@ function GateNote({
   if (shortRaw > 0n) {
     return (
       <p className={`${base} text-down`}>
-        Short {num(fromRawUnits(shortRaw, decimals), 2)} $XAS of the{' '}
+        Short {num(fromRawUnits(shortRaw, decimals), 2)} $XCs of the{' '}
         {num(status.holdRequirementTokens)} this mint requires.
       </p>
     )

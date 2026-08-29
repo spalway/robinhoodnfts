@@ -239,7 +239,7 @@ function Footer() {
         <p className="mt-3 max-w-2xl text-[11px] leading-relaxed text-ink-mute">
           Build your own corporation directly on Robinhood Chain. Every xployee is assigned desks
           named after Robinhood Stock Tokens — the tokenized equities that trade on the chain. Hold
-          $XAS, hire one, and take your place on xNET.
+          $XCs, hire one, and take your place on xNET.
         </p>
         {/* This paragraph used to say every balance, hire and yield figure on the
             site was simulated. Two thirds of that is no longer true — a mint is a

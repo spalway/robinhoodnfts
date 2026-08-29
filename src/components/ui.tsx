@@ -17,7 +17,7 @@ export function Panel({
   accent,
 }: {
   /** ReactNode, not string, so a title can carry .keep-case and protect the
-      lowercase x in "$XAS" from the global uppercase rule. */
+      lowercase x in "$XCs" from the global uppercase rule. */
   title: ReactNode
   right?: ReactNode
   children: ReactNode

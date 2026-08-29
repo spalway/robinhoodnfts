@@ -27,7 +27,7 @@
 -- WHAT IS DELIBERATELY NOT FINISHED
 -- ===========================================================================
 -- xnft_confirm_mint decides who receives a serial after real money has moved.
--- It cannot be written correctly until $XAS exists, because the thing it has to
+-- It cannot be written correctly until $XCs exists, because the thing it has to
 -- do is read a specific transfer of a specific mint off the chain. It therefore
 -- REFUSES while the mint address is unset — which is the state today — rather
 -- than shipping a verifier that could issue a serial to somebody who paid
@@ -398,7 +398,7 @@ $$;
 -- Doing its job means reading a specific transfer, of a specific SPL mint, to a
 -- specific wallet, out of a specific Solana transaction — and being certain the
 -- same signature can never issue twice. None of that can be written honestly
--- while $XAS does not exist: there is no mint address to check against, no
+-- while $XCs does not exist: there is no mint address to check against, no
 -- transaction to read, and no way to test that the verifier rejects a payment
 -- that did not happen.
 --

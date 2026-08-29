@@ -22,9 +22,9 @@
 import { fetchProtocolConfig, isSupabaseConfigured } from './supabase'
 
 export interface RuntimeConfig {
-  /** The $XAS SPL mint. Empty until the token is launched. */
+  /** The $XCs SPL mint. Empty until the token is launched. */
   xnftMint: string
-  /** Where a mint's 10,000 $XAS is sent. Empty means minting is disarmed. */
+  /** Where a mint's 10,000 $XCs is sent. Empty means minting is disarmed. */
   devWallet: string
   /** Simulated marketplace fees only. */
   treasuryWallet: string

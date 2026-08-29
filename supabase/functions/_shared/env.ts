@@ -1,9 +1,9 @@
 // Server-side configuration.
 //
 // Same discipline as the placeholder constants in `src/lib/evm.ts`, and
-// deliberately the same three values: the $XAS token, the treasury wallet and
+// deliberately the same three values: the $XCs token, the treasury wallet and
 // the dev wallet. An address that does not exist yet is empty, and every path that
-// would need it returns `not-configured` instead of guessing. $XAS is not
+// would need it returns `not-configured` instead of guessing. $XCs is not
 // deployed on Robinhood Chain at the time of writing, so the honest default is
 // "unset" and the honest response to a call is a 503 that says so.
 //
@@ -23,7 +23,7 @@ import { fnError, isFnError, type FnError } from './http.ts'
 export interface FunctionConfig {
   /** Robinhood Chain JSON-RPC endpoint (chain id 4663). */
   rpcUrl: string
-  /** 0x contract address of the $XAS ERC-20. The only token these functions will index. */
+  /** 0x contract address of the $XCs ERC-20. The only token these functions will index. */
   xnftMint: string
   /** The operator's treasury wallet. */
   treasury: string
@@ -117,7 +117,7 @@ export function loadConfig(): FunctionConfig | FnError {
     return fnError('not-configured', 'CHAIN_RPC_URL must be an http(s) endpoint.')
   }
 
-  const xnftMint = requireAddress('XAS_TOKEN_ADDRESS', 'no transfer can be attributed to $XAS')
+  const xnftMint = requireAddress('XCS_TOKEN_ADDRESS', 'no transfer can be attributed to $XCs')
   if (typeof xnftMint !== 'string') return xnftMint
 
   const treasury = requireAddress('TREASURY_ADDRESS', 'no fee leg can be recognised')

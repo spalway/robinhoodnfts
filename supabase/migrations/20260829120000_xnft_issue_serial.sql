@@ -18,7 +18,7 @@
 -- THE SPLIT, AND WHY THE GRANT IS THE WHOLE SECURITY MODEL
 -- ===========================================================================
 --   confirm-mint (Deno)   reads Robinhood Chain and decides whether a specific
---                         transfer of $XAS to the project wallet really happened
+--                         transfer of $XCs to the project wallet really happened
 --   this function         takes (hash, buyer) on trust and deals a serial
 --
 -- This function CANNOT verify anything. It is handed a transaction hash and a
@@ -51,7 +51,7 @@ alter table public.xnft_holdings
   add column if not exists paid_raw numeric;
 
 comment on column public.xnft_holdings.paid_raw is
-  'Base units of $XAS the verifier observed on the Transfer log. Audit only — the amount was already checked against the price on chain before this row was written.';
+  'Base units of $XCs the verifier observed on the Transfer log. Audit only — the amount was already checked against the price on chain before this row was written.';
 
 create or replace function public.xnft_issue_serial(
   p_signature text,

@@ -1,4 +1,4 @@
-// Every real transfer of $XAS this app can make, composed as raw ERC-20 calls
+// Every real transfer of $XCs this app can make, composed as raw ERC-20 calls
 // against Robinhood Chain.
 //
 // This replaces src/lib/spl.ts, which did the same job with SPL Token
@@ -43,7 +43,7 @@ import { MINT_BURN } from './fees'
  * Robinhood Chain mainnet. Verified live: eth_chainId returns 0x1237.
  *
  * Gas is paid in ETH — the chain has no native token of its own, which is worth
- * knowing before a buyer wonders why they need ETH to spend $XAS.
+ * knowing before a buyer wonders why they need ETH to spend $XCs.
  */
 export const CHAIN_ID = 4663
 export const CHAIN_ID_HEX = '0x1237'
@@ -65,7 +65,7 @@ function cfg() {
   return getRuntimeConfig()
 }
 
-/** The $XAS ERC-20, as configured right now. Never cached — see runtimeConfig. */
+/** The $XCs ERC-20, as configured right now. Never cached — see runtimeConfig. */
 export function tokenAddress(): string {
   return cfg().xnftMint
 }
@@ -155,7 +155,7 @@ function fail(code: EvmErrorCode, message: string, shortfall?: number): EvmError
 }
 
 const NOT_CONFIGURED =
-  'The $XAS token address is not set, so nothing can be built or sent. Nothing was read.'
+  'The $XCs token address is not set, so nothing can be built or sent. Nothing was read.'
 
 export function isMintConfigured(): boolean {
   return isMintArmed() && isAddress(tokenAddress()) && isAddress(projectWallet())
@@ -248,7 +248,7 @@ export interface TokenBalance {
    * Always true on EVM, and kept only so the UI's shape matches what it had.
    * On Solana this said whether an associated token account existed at all;
    * here a balance is a mapping entry and reading it always succeeds, so a
-   * wallet that has never held $XAS reads zero rather than "no account".
+   * wallet that has never held $XCs reads zero rather than "no account".
    */
   exists: boolean
 }
@@ -268,7 +268,7 @@ export async function fetchDecimals(endpoint?: string): Promise<number | EvmErro
   const value = hexToBigInt(raw)
   // A token claiming an implausible precision is not one this app can price.
   if (value === null || value < 0n || value > 36n) {
-    return fail('not-configured', '$XAS reports an implausible decimal count.')
+    return fail('not-configured', '$XCs reports an implausible decimal count.')
   }
   return Number(value)
 }
@@ -278,7 +278,7 @@ export async function fetchTokenBalance(
   endpoint?: string,
 ): Promise<TokenBalance | EvmError> {
   if (!isMintConfigured()) return fail('not-configured', NOT_CONFIGURED)
-  if (!isAddress(owner)) return fail('no-wallet', 'Connect a wallet to read your $XAS balance.')
+  if (!isAddress(owner)) return fail('no-wallet', 'Connect a wallet to read your $XCs balance.')
 
   const decimals = await fetchDecimals(endpoint)
   if (isEvmError(decimals)) return decimals
@@ -295,7 +295,7 @@ export async function fetchTokenBalance(
 // The mint
 // ---------------------------------------------------------------------------
 
-/** Whole $XAS a mint costs, and — since there is no fee — the entire debit. */
+/** Whole $XCs a mint costs, and — since there is no fee — the entire debit. */
 export const MINT_COST = Number(MINT_BURN)
 
 export interface MintRequest {
@@ -308,7 +308,7 @@ export interface MintRequest {
 }
 
 /**
- * The unsigned transfer: 10,000 $XAS from the buyer to the project wallet.
+ * The unsigned transfer: 10,000 $XCs from the buyer to the project wallet.
  *
  * Checks the balance first, so an underfunded wallet gets a sentence rather
  * than a signature prompt it should never have seen. Signs nothing.
@@ -328,7 +328,7 @@ export async function buildMintRequest(
     const short = toUiAmount(needed - balance.rawAmount, balance.decimals)
     return fail(
       'insufficient-balance',
-      `You need ${MINT_COST.toLocaleString('en-US')} $XAS to hire an xployee. Short ${short.toLocaleString('en-US', { maximumFractionDigits: 4 })} $XAS.`,
+      `You need ${MINT_COST.toLocaleString('en-US')} $XCs to hire an xployee. Short ${short.toLocaleString('en-US', { maximumFractionDigits: 4 })} $XCs.`,
       short,
     )
   }
@@ -384,7 +384,7 @@ export function classifySendError(e: unknown): EvmError {
     return fail('wrong-chain', `Switch your wallet to ${CHAIN_NAME} and try again.`)
   }
   if (/insufficient funds/i.test(message)) {
-    // ETH for gas, not $XAS — the token balance was checked before building.
+    // ETH for gas, not $XCs — the token balance was checked before building.
     return fail('insufficient-balance', `You need a little ETH on ${CHAIN_NAME} to pay gas.`)
   }
   return fail('unknown', message || 'The wallet could not send the transaction.')

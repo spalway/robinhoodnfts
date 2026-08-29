@@ -85,17 +85,17 @@ Deno.serve(
     const legs = transfersOf(receipt, config.xnftMint)
 
     if (legs.length === 0) {
-      return answer('rejected', 'not-a-mint', 'That transaction moved no $XAS. Nothing was written.')
+      return answer('rejected', 'not-a-mint', 'That transaction moved no $XCs. Nothing was written.')
     }
     if (legs.length > 1) {
       // A mint is exactly one transfer. Guessing which leg was "the payment" is
       // how some other shape gets credited as a mint.
-      return answer('rejected', 'not-a-mint', `That transaction moved $XAS in ${legs.length} transfers. A mint is exactly one.`)
+      return answer('rejected', 'not-a-mint', `That transaction moved $XCs in ${legs.length} transfers. A mint is exactly one.`)
     }
 
     const leg = legs[0]
     if (!sameAddress(leg.to, config.devWallet)) {
-      return answer('rejected', 'wrong-destination', 'That $XAS did not go to the project wallet. Nothing was written.')
+      return answer('rejected', 'wrong-destination', 'That $XCs did not go to the project wallet. Nothing was written.')
     }
     if (sameAddress(leg.from, config.devWallet)) {
       return answer('rejected', 'not-a-mint', 'That transfer has no payer distinct from the project wallet.')
@@ -112,7 +112,7 @@ Deno.serve(
     }
     const expected = mintAmount(decimals)
     if (expected === null) {
-      return answer('rejected', 'implausible-decimals', '$XAS reports an implausible decimal count, so no price can be checked.')
+      return answer('rejected', 'implausible-decimals', '$XCs reports an implausible decimal count, so no price can be checked.')
     }
     if (leg.amount !== expected) {
       return answer('rejected', 'wrong-amount', 'That transfer is not the mint price. Nothing was written.')

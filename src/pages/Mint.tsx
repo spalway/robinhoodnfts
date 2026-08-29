@@ -113,12 +113,12 @@ export function Mint() {
           <Stat label="Minted" value={`${num(issued)} / ${num(maxSupply)}`} sub="issued on chain" />
           <Stat
             label="Price"
-            value={<span className="keep-case">{num(status?.priceTokens ?? 10_000)} $XAS</span>}
+            value={<span className="keep-case">{num(status?.priceTokens ?? 10_000)} $XCs</span>}
             sub="per xployee"
           />
           <Stat
             label="Hold To Mint"
-            value={<span className="keep-case">{num(status?.holdRequirementTokens ?? 10_000)} $XAS</span>}
+            value={<span className="keep-case">{num(status?.holdRequirementTokens ?? 10_000)} $XCs</span>}
             sub="wallet requirement"
           />
           <Stat label="Your Hires" value={num(status?.walletHoldings ?? 0)} sub="this wallet" />

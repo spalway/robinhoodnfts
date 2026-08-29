@@ -1,4 +1,4 @@
-// $XAS token configuration — the one file an operator edits at launch.
+// $XCs token configuration — the one file an operator edits at launch.
 import { getRuntimeConfig } from './runtimeConfig'
 //
 
@@ -15,7 +15,7 @@ import { getRuntimeConfig } from './runtimeConfig'
 // spend, link or display refuses rather than improvising.
 
 /**
- * The $XAS SPL mint address, base58. This is the "CA" a launch page prints.
+ * The $XCs SPL mint address, base58. This is the "CA" a launch page prints.
  *
  * Paste it verbatim. Base58 is case-sensitive and has no normalisation, so a
  * single case-folded character is a different address — which is why every
@@ -25,13 +25,13 @@ export function xnftCa(): string {
   return getRuntimeConfig().xnftMint
 }
 
-/** X/Twitter handle only — no leading `@`, no URL. e.g. `xnftsdotfun`. */
+/** X/Twitter handle only — no leading `@`, no URL. e.g. `xcorpnetwork`. */
 export function supportHandle(): string {
   return getRuntimeConfig().supportHandle
 }
 
 /**
- * Total supply, in whole $XAS. A pump.fun launch mints a fixed billion and
+ * Total supply, in whole $XCs. A pump.fun launch mints a fixed billion and
  * revokes mint authority, so this is a constant rather than a chain read.
  *
  * bigint because it composes with `MINT_BURN` in lib/fees.ts — the burn maths on
@@ -61,7 +61,7 @@ export function isTokenLaunched(): boolean {
  *
  * Supabase still wins whenever it has a value.
  */
-const DEFAULT_HANDLE = 'xnfts_network'
+const DEFAULT_HANDLE = 'xcorpnetwork'
 
 export function twitterHandle(): string | null {
   const configured = supportHandle().trim().replace(/^@+/, '')

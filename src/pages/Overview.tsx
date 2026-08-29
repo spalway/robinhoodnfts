@@ -60,13 +60,25 @@ export function Overview() {
 
   return (
     <div className="space-y-5">
-      <Panel title="xCorp — Hire A Generative Pixel xployee">
+      {/* Panel titles run through `.ui`, which uppercases — so the parenthetical
+          is set keep-case. Left alone it would shout the whole clause in caps,
+          and a 60-character all-caps subordinate phrase stops being read. */}
+      <Panel
+        title={
+          <>
+            xCorp — Earn yield by running your own fleet of xployees{' '}
+            <span className="keep-case font-normal opacity-80">
+              (NFTs tied to brokerage desks that generate revenue)
+            </span>
+          </>
+        }
+      >
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           <Stat label="Minted" value={`${num(issued)} / ${num(maxSupply)}`} sub="issued on chain" />
           <Stat label="Holders" value={stats ? num(stats.wallets) : '—'} sub="wallets on xNET" />
           <Stat
             label="Mint Price"
-            value={<span className="keep-case">{num(status?.priceTokens ?? 10_000)} $XAS</span>}
+            value={<span className="keep-case">{num(status?.priceTokens ?? 10_000)} $XCs</span>}
             sub="one transfer, no fee"
           />
           {/* Was a "Status" stat reading "Not open yet". It restated what the
@@ -99,14 +111,14 @@ export function Overview() {
         </p>
 
         <p className="mt-3 max-w-3xl text-[11px] leading-relaxed text-ink-mute">
-          Hold {hold} $XAS to hire one. The serial you draw comes from a shuffle fixed before the
+          Hold {hold} $XCs to hire one. The serial you draw comes from a shuffle fixed before the
           first mint, so the low numbers stay genuinely rare.
         </p>
 
         <ol className="mt-4 grid gap-4 border-t border-rule pt-4 text-[11px] leading-relaxed text-ink-mute md:grid-cols-4">
           {[
             ['1', 'Connect an EVM wallet. Read-only — nothing is signed.'],
-            ['2', `Hold ${hold} $XAS. The mint button unlocks when your balance clears it.`],
+            ['2', `Hold ${hold} $XCs. The mint button unlocks when your balance clears it.`],
             ['3', 'Sign one transfer to the project wallet.'],
             ['4', 'The payment is verified against the chain and a serial is issued to you.'],
           ].map(([n, body]) => (

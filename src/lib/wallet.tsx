@@ -10,7 +10,7 @@
 // injected provider. This detects EIP-6963 providers directly and renders in
 // the app's own aesthetic.
 //
-// Signing exists for exactly one purpose — the 10,000 $XAS transfer that gates
+// Signing exists for exactly one purpose — the 10,000 $XCs transfer that gates
 // minting. Nothing else in the app calls it, and it is never invoked except
 // from an explicit click. Everything else stays read-only.
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'

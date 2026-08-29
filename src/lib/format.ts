@@ -97,11 +97,11 @@ export function plural(count: number, one: string, many = `${one}s`): string {
 }
 
 /**
- * $XAS amounts. Adaptive precision: an epoch fee is a couple of tokens while a
+ * $XCs amounts. Adaptive precision: an epoch fee is a couple of tokens while a
  * sale ask is thousands, and rounding both to integers would flatten every
  * contract fee to the same number.
  *
- * The TICKER is XAS; the PRODUCT is xCorp. Two different words, and this
+ * The TICKER is XCs; the PRODUCT is xCorp. Two different words, and this
  * function returns the first. `.keep-case` stays correct on the elements that
  * carry it — it protects the lowercase x in "xCorp", "xployee" and every xStock
  * ticker ($AAPLx) — but it is a no-op on this string, which is all caps.
@@ -110,7 +110,7 @@ export function xnft(input: number): string {
   const value = shown(input)
   if (value === null) return '—'
   const decimals = Math.abs(value) < 100 ? 2 : 0
-  return `${num(value, decimals)} XAS`
+  return `${num(value, decimals)} XCs`
 }
 
 /** Truncate a base58 address: XsbE…JzJp */

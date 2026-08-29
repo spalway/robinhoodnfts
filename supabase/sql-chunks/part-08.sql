@@ -1378,7 +1378,7 @@ $$;
 -- WHAT IS DELIBERATELY NOT FINISHED
 -- ===========================================================================
 -- xnft_confirm_mint decides who receives a serial after real money has moved.
--- It cannot be written correctly until $XAS exists, because the thing it has to
+-- It cannot be written correctly until $XCs exists, because the thing it has to
 -- do is read a specific transfer of a specific mint off the chain. It therefore
 -- REFUSES while the mint address is unset — which is the state today — rather
 -- than shipping a verifier that could issue a serial to somebody who paid
@@ -1749,7 +1749,7 @@ $$;
 -- Doing its job means reading a specific transfer, of a specific SPL mint, to a
 -- specific wallet, out of a specific Solana transaction — and being certain the
 -- same signature can never issue twice. None of that can be written honestly
--- while $XAS does not exist: there is no mint address to check against, no
+-- while $XCs does not exist: there is no mint address to check against, no
 -- transaction to read, and no way to test that the verifier rejects a payment
 -- that did not happen.
 --
@@ -1845,7 +1845,7 @@ grant execute on function public.xnft_confirm_mint(text) to anon, authenticated;
 -- THE SPLIT, AND WHY THE GRANT IS THE WHOLE SECURITY MODEL
 -- ===========================================================================
 --   confirm-mint (Deno)   reads Robinhood Chain and decides whether a specific
---                         transfer of $XAS to the project wallet really happened
+--                         transfer of $XCs to the project wallet really happened
 --   this function         takes (hash, buyer) on trust and deals a serial
 --
 -- This function CANNOT verify anything. It is handed a transaction hash and a
@@ -1878,7 +1878,7 @@ alter table public.xnft_holdings
   add column if not exists paid_raw numeric;
 
 comment on column public.xnft_holdings.paid_raw is
-  'Base units of $XAS the verifier observed on the Transfer log. Audit only — the amount was already checked against the price on chain before this row was written.';
+  'Base units of $XCs the verifier observed on the Transfer log. Audit only — the amount was already checked against the price on chain before this row was written.';
 
 create or replace function public.xnft_issue_serial(
   p_signature text,

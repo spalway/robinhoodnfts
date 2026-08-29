@@ -4,7 +4,7 @@
 // can never disagree about a rounding unit.
 //
 // NOTHING HERE PRICES A MINT. That absence is the point and it is recent: a mint
-// used to be 10,000 $XAS burned plus a 5% leg to the treasury, and it is now
+// used to be 10,000 $XCs burned plus a 5% leg to the treasury, and it is now
 // 10,000 burned and nothing else — one `transferChecked`, one destination, no
 // fee, no second amount to reconcile. The rates below survive only because sales
 // and contracts are still priced, and both of those are Postgres rows rather than
@@ -71,13 +71,13 @@ export const SIM_RENT_FEE_BPS = 1_000n
 export const MAX_FEE_BPS = 2_000n
 
 /**
- * Whole $XAS burned per mint, and — since the fee was removed — the entire cost
+ * Whole $XCs burned per mint, and — since the fee was removed — the entire cost
  * of a mint. Scaled by the mint's decimals to reach raw units.
  */
 export const MINT_BURN = 10_000n
 
 /**
- * Decimals assumed for $XAS wherever the UI needs raw units before the mint
+ * Decimals assumed for $XCs wherever the UI needs raw units before the mint
  * exists. It is only ever a placeholder for the simulated marketplace: `spl.ts`
  * reads the real figure off the mint account and every live money path scales by
  * that, so a deployed mint using anything other than 9 changes nothing here and
@@ -205,7 +205,7 @@ export function mintAmount(decimals: number = XNFT_DECIMALS): bigint {
 }
 
 /**
- * One outright sale in the simulated marketplace. `price` is in whole $XAS — the
+ * One outright sale in the simulated marketplace. `price` is in whole $XCs — the
  * seller receives exactly that, and the buyer pays it plus the 5% fee.
  */
 export function saleQuote(price: number, decimals: number = XNFT_DECIMALS): Quote {
@@ -213,7 +213,7 @@ export function saleQuote(price: number, decimals: number = XNFT_DECIMALS): Quot
 }
 
 /**
- * One rental contract. `feePerEpoch` is in whole $XAS; the owner receives
+ * One rental contract. `feePerEpoch` is in whole $XCs; the owner receives
  * `feePerEpoch × term` and the renter pays 10% on top of it.
  *
  * The fee is charged on the contract total rather than per epoch: flooring once

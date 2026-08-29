@@ -13,7 +13,7 @@
 -- =========================================================================
 
 -- =========================================================================
--- SECTION 9 of 17 — 20260806090400_seed_xployee_skills.sql
+-- SECTION 9 of 18 — 20260806090400_seed_xployee_skills.sql
 -- =========================================================================
 
 -- xNFTs index — seed: which desks each xployee works.
@@ -952,7 +952,7 @@ comment on column public.xployees.apy is
 
 
 -- =========================================================================
--- SECTION 10 of 17 — 20260806090500_seed_xnet_genesis.sql
+-- SECTION 10 of 18 — 20260806090500_seed_xnet_genesis.sql
 -- =========================================================================
 
 -- xNFTs index — seed: the genesis holding.
@@ -1049,7 +1049,7 @@ revoke all on function public.assign_genesis_crew() from anon, authenticated;
 
 
 -- =========================================================================
--- SECTION 11 of 17 — 20260806090600_mint_control.sql
+-- SECTION 11 of 18 — 20260806090600_mint_control.sql
 -- =========================================================================
 
 -- xNFTs index — minting: the rate limit, the reservation, and the serial dealer.
@@ -1967,7 +1967,7 @@ grant execute on function public.serial_label(bigint) to public;
 
 
 -- =========================================================================
--- SECTION 12 of 17 — 20260806090700_identity.sql
+-- SECTION 12 of 18 — 20260806090700_identity.sql
 -- =========================================================================
 
 -- xNFTs index — identity: profiles, verified X handles, and wallet linking.
@@ -2573,7 +2573,7 @@ grant execute on function public.purge_wallet_link_challenges() to service_role;
 
 
 -- =========================================================================
--- SECTION 13 of 17 — 20260806090800_market_and_epochs.sql
+-- SECTION 13 of 18 — 20260806090800_market_and_epochs.sql
 -- =========================================================================
 
 -- xNFTs index — the simulated marketplace and the epoch ledger.
@@ -3362,7 +3362,7 @@ grant execute on function public.sim_fee_on(numeric, integer) to public;
 
 
 -- =========================================================================
--- SECTION 14 of 17 — 20260806090900_social.sql
+-- SECTION 14 of 18 — 20260806090900_social.sql
 -- =========================================================================
 
 -- xNFTs index — the social layer: friends, threads, messages, trade offers.

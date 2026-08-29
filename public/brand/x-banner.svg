@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="500" viewBox="0 0 1500 500">
+  <rect width="1500" height="500" fill="#1c1c1c"/>
+  <text x="750" y="293" font-family="M42_FLIGHT 721" fill="#ededed"
+        text-anchor="middle" letter-spacing="6">
+    <tspan font-size="58">X</tspan><tspan font-size="120">CORP</tspan>
+  </text>
+  <rect x="540" y="347" width="420" height="5" fill="#ccff00"/>
+  <text x="750" y="393" font-family="Geist, Segoe UI, sans-serif" font-size="21"
+        fill="#a3a3a3" text-anchor="middle" letter-spacing="7">GENERATIVE PIXEL WORKERS ON SOLANA</text>
+</svg>

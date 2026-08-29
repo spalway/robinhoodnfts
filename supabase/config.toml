@@ -1,0 +1,134 @@
+# Supabase project config.
+#
+# Docker is not installed on this machine, so `supabase start` cannot run and the
+# local stack in the [db]/[api] sections below is inert. Everything here that
+# matters is the part the CLI reads when talking to a *remote* linked project:
+# the [functions.*] blocks, which control how `supabase functions deploy` sets up
+# each Edge Function. See supabase/README.md for the remote-only workflow.
+
+project_id = "xnfts"
+
+[api]
+enabled = true
+port = 54321
+# Only `public` is exposed to PostgREST. The writer functions live in `public`
+# too, but they are unreachable from the anon key because EXECUTE is revoked from
+# anon and authenticated — see 20260805120100_writer_functions.sql.
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+# The index is append-only and read-heavy. A cap keeps an unbounded
+# `select * from trades` from turning into a full-table download.
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[db.migrations]
+enabled = true
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+# X (Twitter) OAuth is the ONLY sign-in. There is no email/password flow and there
+# must not be one: a session exists here for exactly two purposes — to carry a
+# verified X identity that `link-wallet` can copy a handle out of, and to be the
+# subject a wallet signature is bound to. An email account proves neither, so
+# adding it would create sessions that can write to the social layer while proving
+# nothing about who is writing.
+#
+# `enable_signup = true` is required, and it is not a loosening: with OAuth as the
+# only provider, "signup" IS "the first time this X account signs in". Leaving it
+# false makes every new visitor's first sign-in fail with a message about
+# registrations being disabled.
+enable_signup = true
+
+# Local-stack values only — Docker is not installed here, so these are inert. The
+# hosted project is configured in the dashboard; supabase/README.md §4 has the
+# exact fields and the callback URL X needs.
+[auth.external.twitter]
+enabled = true
+client_id = "env(SUPABASE_AUTH_EXTERNAL_TWITTER_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_EXTERNAL_TWITTER_SECRET)"
+
+[edge_runtime]
+enabled = true
+policy = "oneshot"
+
+# ---------------------------------------------------------------------------
+# Edge Functions
+# ---------------------------------------------------------------------------
+
+# The single write path for chain-derived data. verify_jwt stays on so the
+# function is not an open endpoint on the public internet: the browser already
+# sends the anon key, and requiring it costs nothing while filtering out drive-by
+# traffic. It is not a security boundary — the real boundary is that this function
+# ignores every number the caller sends and re-reads the transaction from RPC.
+[functions.ingest-signature]
+verify_jwt = true
+
+# Records the pending row for a claim the operator already signed and sent. It
+# builds nothing: the claim transaction is assembled in the browser by
+# buildClaimTransaction() in src/lib/spl.ts, because that is where the wallet is.
+# The JWT check here is rate-limiting, not authorisation — the row this writes
+# carries no verified amount and cannot reach 'confirmed' without one.
+[functions.request-payout]
+verify_jwt = true
+
+# Polls signature status and settles pending payouts. Also runs on a schedule —
+# see supabase/README.md for the pg_cron wiring, which passes the service-role key
+# so this stays true.
+[functions.confirm-payout]
+verify_jwt = true
+
+# ---------------------------------------------------------------------------
+# The session-backed write paths
+# ---------------------------------------------------------------------------
+#
+# All five resolve the caller by exchanging their bearer token at /auth/v1/user
+# and then hand an auth.users id to a SQL writer that looks the wallet up itself.
+# None of them accepts a wallet address as a parameter.
+#
+# `verify_jwt = true` here is defence in depth rather than the boundary. The real
+# check is `resolveCaller` in _shared/auth.ts, which validates the token against
+# GoTrue inside the function — because a security property that depends on a flag
+# in this file is a security property that disappears the day somebody flips the
+# flag to debug something. Note that the anon key IS a valid JWT and passes the
+# platform check while resolving to no user, so these two layers are answering
+# different questions.
+
+# Takes the mint rate limit and holds a serial BEFORE anything is burned. The
+# limit itself lives in public.reserve_mint — an Edge Function cannot see the
+# invocations running beside it, so a limit implemented here would be one two
+# simultaneous requests could both pass.
+[functions.mint-reserve]
+verify_jwt = true
+
+# Proves an X account and a wallet are the same person: a verified OAuth identity
+# on one side, an ed25519 signature over a server-issued nonce on the other. The
+# only place in this backend that performs cryptography itself.
+[functions.link-wallet]
+verify_jwt = true
+
+# Handle, bio and avatar. Deliberately has no way to set an X handle.
+[functions.profile]
+verify_jwt = true
+
+# Listing, cancelling, buying and renting. All simulated, all checked under a row
+# lock in SQL. The price is never a parameter.
+[functions.market]
+verify_jwt = true
+
+# Friend requests, direct messages and trade offers. Accepting an offer records a
+# decision and moves nothing.
+[functions.social]
+verify_jwt = true
+
+# The SOL claim queue: a holder opens a ticket, an operator resolves it. Nothing
+# on this path can move SOL, and nothing here tries to.
+[functions.payout-request]
+verify_jwt = true

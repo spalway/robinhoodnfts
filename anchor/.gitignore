@@ -1,0 +1,11 @@
+.anchor
+target
+node_modules
+test-ledger
+.yarn
+.DS_Store
+**/*.rs.bk
+
+# The program keypair lives under target/ and is therefore ignored. A fresh
+# clone gets a new one from `anchor build`; run `anchor keys sync` afterwards so
+# declare_id! and Anchor.toml agree with it again.

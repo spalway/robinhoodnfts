@@ -1,0 +1,405 @@
+@import 'tailwindcss';
+
+/* ---- Faces -------------------------------------------------------------
+   m42        — the xCorp wordmark, and nothing else. It is a 2001 caps-only
+                bitmap face: characterful at display size, illegible as UI.
+   Geist Sans — every label, nav item, panel title, badge and body run.
+   Geist Mono — numerals, tables, addresses, tickers. Anything that should
+                align in a column or read as data.
+   ------------------------------------------------------------------------ */
+@font-face {
+  font-family: 'm42';
+  src: url('/fonts/m42.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/Geist-Variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/fonts/GeistMono-Variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('/fonts/Roboto-Variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  /* ---- Ground and ink ---------------------------------------------------
+     Charcoal ground, light ink, acid accent. Every value is measured: the
+     palette inverted, so each accent that had been DARKENED for the tan was
+     suddenly at 2.5:1 and had to be lifted instead. Ratios are the reason for
+     the exact hex, not taste.
+     ------------------------------------------------------------------------ */
+  --color-paper: #1c1c1c;
+  --color-ink: #ededed;            /* 14.56:1 on ground */
+  --color-ink-mute: #a3a3a3;       /* 6.76:1 ground, 6.00:1 wash */
+  --color-ink-faint: #8a8a8a;      /* 4.94:1 ground, 4.38:1 wash */
+  --color-rule: #383838;           /* hairline, 1.45:1 */
+  --color-wash: #262626;
+
+  /* The one loud colour. 14.50:1 on the ground, and black on IT is 16.07:1 —
+     which is why a filled accent control carries near-black type rather than
+     the paper token. */
+  --color-accent: #ccff00;
+  --color-accent-ink: #111111;
+
+  /* Market colours, lifted for the dark ground. On the tan these were darkened
+     to #126832 / #ac3131 / #126a33; unchanged here they measure about 1.6:1 and
+     vanish. These read on paper / on wash. */
+  --color-up: #3ddc84;             /* 10.0 / 8.9 */
+  --color-down: #ff6b6b;           /* 6.1 / 5.5 */
+  --color-money: #3ddc84;
+
+  /* Rarity — the only other colour in the chrome. */
+  --color-t1: #44af63;
+  --color-t2: #1d84de;
+  --color-t3: #d211b0;
+  --color-t4: #ff1b1b;
+
+  --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --font-wordmark: 'm42', 'Courier New', monospace;
+  /* The label voice — headers, nav, panel titles, badges. */
+  --font-label: 'Roboto', 'Geist', ui-sans-serif, system-ui, sans-serif;
+}
+
+/*
+ * There is one theme: light ink on a charcoal ground, with one acid accent.
+ *
+ * A dark palette used to live here as a straight swap of the `paper` and `ink`
+ * tokens. It was removed deliberately. The tokens themselves stay, because
+ * routing every colour through `paper` / `ink` / `rule` / `wash` is still what
+ * keeps the chrome consistent — but there is no second palette to keep in sync,
+ * and no value needs a light and a dark variant any more.
+ */
+
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    color-scheme: dark;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Numerals and identifiers align in columns; prose does not. */
+  table,
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+}
+
+@layer utilities {
+  /**
+   * `.ui` is the label voice: uppercase, tracked, and set in Roboto Bold.
+   * Used for nav, panel titles, stat labels, badges and table heads.
+   *
+   * Roboto's bold is noticeably denser than Geist's, so tracking is pulled in
+   * slightly — at 0.09em a bold uppercase run starts to read as spaced-out
+   * rather than as a label.
+   */
+  .ui {
+    font-family: var(--font-label);
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  /* One step up from the Geist scale — bolder type needs the room. */
+  .ui-10 { font-size: 11px; }
+  .ui-11 { font-size: 12px; }
+  .ui-12 { font-size: 13px; }
+  .ui-14 { font-size: 15px; }
+  .ui-18 { font-size: 19px; letter-spacing: 0.03em; }
+  .ui-22 { font-size: 23px; letter-spacing: 0.01em; }
+
+  .mono { font-family: var(--font-mono); }
+
+  /* The wordmark, and only the wordmark. */
+  .wordmark {
+    font-family: var(--font-wordmark);
+    -webkit-font-smoothing: none;
+    font-smooth: never;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  /* The faked lowercase. m42 is caps-only, so the x and the s are simply set
+     smaller — and the ratio is the whole trick. At 24/42 (0.57) they read as
+     small capitals rather than lowercase; a real lowercase x-height is about
+     half the cap height, which is what 20/42 and 9/18 give. */
+  .wm-20 { font-size: 20px; }
+  .wm-42 { font-size: 42px; }
+  .wm-9 { font-size: 9px; }
+  .wm-18 { font-size: 18px; }
+
+  /* Opt out of the uppercase rule. The lowercase x in "xCorp", "xployee" and
+     every xStock ticker ($AAPLx) is the brand — never flatten it to $AAPLX. */
+  .keep-case {
+    text-transform: none;
+  }
+
+  .pixelated {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-ink) var(--color-paper);
+  }
+
+  /* ---- Character frames ------------------------------------------------
+     The stroke around the art carries rarity the way the badge does. All four
+     are the same 3px weight so a mixed grid stays on one rhythm — only the
+     treatment changes.
+
+     These sit on the element's border, and the art is sized to the CONTENT box
+     inside it, so a frame never crops the character. */
+  .frame-entry {
+    border: 3px solid var(--color-ink);
+  }
+
+  .frame-mid {
+    border: 3px solid #1d84de;
+  }
+
+  /* border-image is what allows a gradient stroke without an extra element.
+     The `1` slice makes the gradient fill the whole border box. */
+  .frame-expert {
+    border: 3px solid transparent;
+    border-image: linear-gradient(135deg, #ffb3e6 0%, #d211b0 42%, #8b2fd6 68%, #ffc2ea 100%) 1;
+  }
+
+  /* No glow. This carried a `frame-laser` animation whose entire content was a
+     pulsing box-shadow halo — up to 20px of blur at 5px spread, breathing on a
+     1.1s cycle.
+
+     The border colour never moved (it was held at #ff1b1b through the whole
+     keyframe set), so the halo WAS the animation, and removing one removes the
+     other. A box-shadow also paints outside the border box and is not clipped
+     by `overflow: hidden`, which is why it was worst exactly where the art is
+     smallest: at 48px in a crew summary the halo was a third the width of the
+     thumbnail and bled across its neighbours and out of the panel.
+
+     The red stroke is what marks an X-RATED. It reads at every size, and it is
+     the same weight as the other three tiers so a grid of mixed rarities stays
+     on one rhythm. The laser treatment the brief asked for lives on the badge
+     wordmark (.tier-xrated), which is type and can carry it. */
+  .frame-xrated {
+    border: 3px solid #ff1b1b;
+  }
+
+  /* ---- Rarity cards ----------------------------------------------------
+     The card around the art picks up the same rarity, so the white gutter
+     under a listing is tinted instead of blank. Kept at ~6% alpha: enough to
+     tell three cards apart at a glance, faint enough that the black data on
+     top is still the loudest thing in the cell.
+
+     UNCOMMON is deliberately absent — a plain white card is what makes the
+     tinted ones read as special. */
+  .card-mid {
+    border-color: #1d84de;
+    background-color: rgba(29, 132, 222, 0.06);
+  }
+
+  .card-expert {
+    border-color: #d211b0;
+    background-color: rgba(210, 17, 176, 0.06);
+  }
+
+  .card-xrated {
+    border-color: #ff1b1b;
+    background-color: rgba(255, 27, 27, 0.06);
+  }
+
+  /* Hover wants to deepen the tint, not flip to the shared grey wash. */
+  .card-mid:hover { background-color: rgba(29, 132, 222, 0.12); }
+  .card-expert:hover { background-color: rgba(210, 17, 176, 0.12); }
+  .card-xrated:hover { background-color: rgba(255, 27, 27, 0.12); }
+
+  /* ---- xBoss rank banners ---------------------------------------------
+     Seniority is colour-coded on the banner, with the label always white.
+     Gold is the tricky one: white on a mid gold is barely legible, so the
+     gradient is anchored on a deep antique gold and the label carries a
+     shadow. The bright highlights live in the sweep, not the base. */
+  /* Bright gold on the OUTER edges, deepening toward the middle — the inverse
+     of the usual centre-lit plate. Two things fall out of that: the pale band
+     that read as white is gone, and the white label now sits on the darkest
+     part of the gradient, which is where it is most legible.
+
+     The stops are positioned against the badge's own padding rather than picked
+     by eye. The plate is `px-2`, and "xCEO" measures 32.3px inside a 48.3px
+     box — so the glyphs occupy 16.5%–83.5% and NOTHING outside 12%–88% is ever
+     behind type. The bright rim therefore has to finish by 12%: the old ramp put
+     #c49a33 at 20%, which meant the first and last letters sat on 2.62:1 against
+     white. Holding 12%–88% between #7a5c0d (6.24:1) and #6e520c (7.3:1) puts the
+     whole label above AA while the rim keeps the metal. */
+  .xboss-ceo {
+    background-image: linear-gradient(100deg, #eccb6a 0%, #7a5c0d 12%, #6e520c 50%, #7a5c0d 88%, #eccb6a 100%);
+    color: #ffffff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+  }
+
+  /* The metallic pass: a narrow white band travelling across the plate. */
+  @keyframes xboss-shine {
+    0%   { transform: translateX(-140%); }
+    55%  { transform: translateX(240%); }
+    100% { transform: translateX(240%); }
+  }
+
+  /* The sweep is warm gold, not white — a white pass over gold is exactly the
+     "white in the middle" that made the plate look washed out. This lifts the
+     metal rather than bleaching it.
+
+     The peak was 0.4, which composited over the plate down to 2.6:1 — the plate
+     passed AA only while the highlight was somewhere else, and a rule the label
+     obeys for three seconds out of four is not a rule. At 0.16 the worst instant
+     over the lightest part of the label band (#7a5c0d) measures 4.52:1, so the
+     pass never takes the label below AA. */
+  .xboss-shine {
+    background-image: linear-gradient(
+      100deg,
+      rgba(255, 226, 150, 0) 0%,
+      rgba(255, 226, 150, 0.05) 38%,
+      rgba(255, 235, 178, 0.16) 50%,
+      rgba(255, 226, 150, 0.05) 62%,
+      rgba(255, 226, 150, 0) 100%
+    );
+    animation: xboss-shine 4.2s ease-in-out infinite;
+  }
+
+  .xboss-vp {
+    background-color: #2545c4;
+    color: #ffffff;
+  }
+
+  /* Follows the ink token so it stays a filled plate in both themes. */
+  .xboss-director {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  /* ---- Rarity, as TYPE -------------------------------------------------
+     All four rarity type colours live here, and nowhere else.
+     `tier.color` in lib/tiers.ts is the *decorative* value — the swatch, the
+     distribution bar, the art's bottom rule, the card tint. Those are blocks of
+     colour and answer to the 3:1 graphical threshold. A badge is text at 11–13px
+     bold, which is normal text for AA, so it answers to 4.5:1 — and the raw hues
+     do not clear it: UNCOMMON #44AF63 measured 2.78:1, RARE #1D84DE 3.88:1,
+     X-RATED #FF1B1B 3.87:1, and EPIC #D211B0 passed on paper (4.72:1) but failed
+     on every zebra row (4.41:1 on the wash).
+
+     The four values below are tuned to land on one rung — 5.07–5.09:1 on paper,
+     4.73–4.75:1 on the wash — so the ladder reads as one system rather than four
+     accidents, and the hue still does the work of naming the tier. UNCOMMON is
+     literally `tier.shade`; the other three are lifted off their shades to keep
+     the vividness the brand depends on while clearing the bar. */
+  /* Darkened for the tan ground: on white these measured ~4.6:1 and on #eaddc7
+     they fell to 3.78:1 on paper and 3.44:1 on the wash — below AA for 12px
+     type. The hues are unchanged in kind, only in value, so a badge still reads
+     as its rarity. tier.color (strokes, dots, plates) is untouched: those are
+     graphics, not type, and they carry the brand. */
+  .tier-entry { color: #9ec98a; }  /* 9.1:1 — lifted from the tan value (2.5:1 here) */
+  .tier-mid { color: #5fb0f5; }    /* 7.3:1 */
+
+  /* ---- EPIC: neon magenta type with a slow violet drift ----------------
+     The brief was "subtle but not noticeable" — this should register as a
+     sheen rather than an effect you catch it doing. */
+  @keyframes epic-drift {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+
+  @keyframes epic-pulse {
+    0%, 100% {
+      filter: drop-shadow(0 0 4px rgba(210, 17, 176, 0.55)) drop-shadow(0 0 9px rgba(139, 47, 214, 0.4));
+    }
+    50% {
+      filter: drop-shadow(0 0 8px rgba(210, 17, 176, 0.9)) drop-shadow(0 0 18px rgba(139, 47, 214, 0.7));
+    }
+  }
+
+  .tier-epic {
+    color: #f06fd8;
+    background-image: linear-gradient(100deg, #f06fd8 0%, #f06fd8 34%, #8f2fd6 50%, #f06fd8 66%, #f06fd8 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* Two animations: the hue drifts through the glyphs while the halo breathes.
+       The glow is the loud half — the brief asked for noticeably more of it. */
+    animation: epic-drift 7s linear infinite, epic-pulse 2.6s ease-in-out infinite;
+  }
+
+  /* ---- X-RATED: laser red with a shine sweep --------------------------
+     Mirrors the reference: base red, sweep #830404, ~4.8s, yoyo.
+     alternate + ease-in-out gives the yo-yo without a second keyframe set.
+
+     The base is #dd0d0d, not the #FF1B1B the frame and the sparks use. Same
+     laser, one stop down: at 11px bold #FF1B1B measures 3.87:1 on paper and
+     3.61:1 on the wash, and this is the one place the hue has to survive being
+     read as a word. The border, the card tint and the ember emitter keep the
+     full-brightness red — they are blocks and particles, not type. */
+  @keyframes laser-sweep {
+    0%   { background-position: 120% 50%; }
+    100% { background-position: -20% 50%; }
+  }
+
+  .tier-xrated {
+    color: #ff6b6b;
+    background-image: linear-gradient(94deg, #ff6b6b 0%, #ff6b6b 42%, #830404 50%, #ff6b6b 58%, #ff6b6b 100%);
+    background-size: 240% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: laser-sweep 4.8s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 2px rgba(255, 27, 27, 0.45));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* .frame-xrated needs nothing here any more — it is a plain stroke with no
+     animation to hold or freeze. */
+
+  .tier-epic,
+  .tier-xrated {
+    animation: none;
+    background-image: none;
+    -webkit-text-fill-color: currentColor;
+  }
+
+  /* Park the sweep off the plate rather than freezing it mid-pass, which
+     would read as a stray white bar across the badge. */
+  .xboss-shine {
+    animation: none;
+    transform: translateX(240%);
+  }
+}

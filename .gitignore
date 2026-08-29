@@ -1,0 +1,27 @@
+# Dependencies — reinstalled from package-lock.json, never committed.
+node_modules/
+
+# Build output. Railway builds this itself from source on every deploy.
+dist/
+*.tsbuildinfo
+
+# Secrets. `.env.example` IS committed (it documents the shape); `.env` never is,
+# because it holds the Supabase anon key and RPC URL for a real project.
+.env
+.env.*
+!.env.example
+
+# Local tooling
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+.vscode/
+.idea/
+
+# Supabase CLI local state — contains a linked project ref and local credentials.
+supabase/.temp/
+supabase/.branches/
+
+# Rendered brand assets are committed on purpose (public/brand/), since they are
+# deliverables rather than build output. `npm run brand` regenerates them.

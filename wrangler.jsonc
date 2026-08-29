@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "xnfts",
+  // Assets-only Worker: no server code, Cloudflare just serves ./dist.
+  "compatibility_date": "2026-08-04",
+  "assets": {
+    "directory": "./dist",
+    // The app is a client-side router. Without this, hitting /marketplace or
+    // /wallet/<address> directly returns Cloudflare's 404 instead of the SPA —
+    // which is exactly what a shared deep link does.
+    "not_found_handling": "single-page-application"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

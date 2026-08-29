@@ -1,0 +1,26 @@
+[package]
+name = "xnft_market"
+version = "0.1.0"
+description = "xNFTs protocol fee program: mint burn, escrowed sales, rentals, treasury payouts."
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "xnft_market"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+
+[dependencies]
+# init-if-needed is required by three destinations that may not exist yet: the
+# incinerator's token account on the first mint, the buyer's NFT account on
+# their first purchase, and the dev wallet's account on the first payout.
+anchor-lang = { version = "0.31.1", features = ["init-if-needed"] }
+# token_2022 is on because $xNFT has not been created yet; every account in this
+# program is an InterfaceAccount so the choice of token program stays open.
+anchor-spl = { version = "0.31.1", features = ["token", "token_2022", "associated_token"] }

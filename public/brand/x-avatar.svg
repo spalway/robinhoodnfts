@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <rect width="400" height="400" fill="#1c1c1c"/>
+
+  <!-- The ink stroke, not the rarity red: on tan the frame's job is to give the
+       tile an edge in a timeline, and a red one now competes with the bar below
+       the glyph rather than framing it. -->
+  <rect x="0" y="0" width="400" height="400" fill="none" stroke="#ededed" stroke-width="18"/>
+
+  <!-- Sized and placed so the glyph plus its bar centre as ONE block. At 210 the
+       X very nearly touched the frame and the pair sat high, leaving a dead
+       band along the bottom that reads as a cropping mistake at avatar size. -->
+  <text x="200" y="278" font-family="M42_FLIGHT 721" font-size="180" fill="#ededed"
+        text-anchor="middle">X</text>
+
+  <!-- The laser bar. Same gesture as the X-RATED frame animation on the site,
+       held at its bright end because a still image cannot breathe. -->
+  <rect x="130" y="298" width="140" height="10" fill="#ccff00"/>
+</svg>

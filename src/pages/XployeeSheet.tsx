@@ -10,6 +10,7 @@ import { usePrices } from '../lib/usePrices'
 import { getStock } from '../lib/stocks'
 import { fetchHolder, isBackendError } from '../lib/backend'
 import { usd, pct, num, shortAddress, dateOnly } from '../lib/format'
+import { explorerTx } from '../lib/solana'
 import { NotFound } from './NotFound'
 
 interface Holder {
@@ -96,7 +97,11 @@ export function XployeeSheet() {
                   <span>{dateOnly(holder.mintedAt)}</span>
                 </div>
                 <a
-                  href={`https://solscan.io/tx/${holder.signature}`}
+                  // solscan.io was hardcoded here — a Solana explorer, which
+                  // would render a Robinhood Chain hash as "not found" on every
+                  // mint. explorerTx() is the same Blockscout URL the mint
+                  // receipt uses, so the two cannot drift apart again.
+                  href={explorerTx(holder.signature)}
                   target="_blank"
                   rel="noreferrer noopener"
                   className="mono block pt-1 text-[10px] underline"
@@ -163,7 +168,7 @@ export function XployeeSheet() {
               </tbody>
             </Table>
             <p className="mt-3 text-[10px] leading-relaxed text-ink-faint">
-              Desk prices are live from Jupiter ({prices.source}). Yield figures are the
+              Desk prices come from Robinhood's own stock-token API ({prices.source}). Yield figures are the
               collection's own model and are not a claim about proceeds.
             </p>
           </Panel>

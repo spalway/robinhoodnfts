@@ -68,7 +68,7 @@ export function Overview() {
           <>
             xCorp — Earn yield by running your own fleet of xployees{' '}
             <span className="keep-case font-normal opacity-80">
-              (NFTs tied to brokerage desks that generate revenue)
+              (worker agents tied to brokerage desks that generate revenue)
             </span>
           </>
         }

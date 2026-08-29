@@ -45,7 +45,7 @@ export function MintGate({ onMinted }: { onMinted: (serial: number | null) => vo
    * The client builds its transfer from MINT_BURN, a compiled-in constant, while
    * the database checks it against `mint_price_tokens`, a row an operator can
    * edit. If those two ever disagree the buyer pays the client's number and the
-   * backend refuses it — money gone, no NFT. So a mismatch disarms the button
+   * backend refuses it — money gone, no xployee. So a mismatch disarms the button
    * rather than being tolerated.
    */
   const priceMismatch =
@@ -132,7 +132,7 @@ export function MintGate({ onMinted }: { onMinted: (serial: number | null) => vo
             rel="noreferrer noopener"
             className="mono block text-[10px] underline"
           >
-            View transaction on Solscan →
+            View transaction on Blockscout →
           </a>
         </div>
       ) : null}

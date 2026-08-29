@@ -19,9 +19,16 @@
 //   is the file that points at the current fingerprints, and a stale copy sends
 //   returning visitors to asset URLs that no longer exist. That failure looks
 //   like a blank page for everyone who visited before the deploy.
+//
+//   THE ONE API ROUTE. /api/stock-prices proxies Robinhood's public price feed.
+//   It lives here rather than in a serverless function because Robinhood sends
+//   no CORS header, so the call cannot come from the page — and because a route
+//   on this server is same-origin, which means the page needs no key, no second
+//   host and no preflight. See api/stock-prices.mjs.
 import { createServer } from 'node:http'
 import { createReadStream, existsSync, statSync } from 'node:fs'
 import { extname, join, normalize, resolve } from 'node:path'
+import { STOCK_PRICES_PATH, handleStockPrices } from './api/stock-prices.mjs'
 
 const ROOT = resolve('dist')
 const PORT = Number(process.env.PORT) || 8080
@@ -93,6 +100,17 @@ createServer((req, res) => {
     return
   }
 
+  // Before the file lookup, because /api/* is not a file and must not fall
+  // through to the SPA — handing index.html to a fetch() that expected JSON is
+  // the failure that sends people hunting in the wrong place.
+  if ((req.url || '').split('?')[0] === STOCK_PRICES_PATH) {
+    handleStockPrices(req, res).catch(() => {
+      res.writeHead(502, { 'Content-Type': 'application/json; charset=utf-8' })
+      res.end(JSON.stringify({ ok: false, error: 'Price lookup failed.' }))
+    })
+    return
+  }
+
   const file = resolveFile(req.url || '/')
   if (file) {
     send(res, file)
@@ -111,5 +129,5 @@ createServer((req, res) => {
 
   send(res, join(ROOT, 'index.html'))
 }).listen(PORT, HOST, () => {
-  console.log(`xNFTs serving dist/ on http://${HOST}:${PORT}`)
+  console.log(`xCorp serving dist/ on http://${HOST}:${PORT}`)
 })

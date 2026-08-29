@@ -1,49 +1,47 @@
-// Live xStock pricing via Jupiter, with an honest fallback.
+// Live Robinhood Stock Token pricing, with an honest fallback.
 //
-// Failure is a first-class path: if the API is unreachable, rate-limited, or
-// returns a symbol we can't parse, we serve baked-in reference prices and mark
-// the reading CACHED. The UI must never blank, spin forever, or render NaN.
-import { XSTOCKS, allMints, stockByMint } from './xstocks'
+// The feed is Robinhood's own — /rhj/prices for the token and /quotes/ for the
+// underlying equity's session move — reached through OUR OWN ORIGIN at
+// /api/stock-prices (api/stock-prices.mjs, mounted by server.mjs in production
+// and by the Vite dev server in development).
+//
+// THE HOP IS NOT OPTIONAL: api.robinhood.com sends no Access-Control-Allow-Origin,
+// so a direct fetch from the page is refused by the browser before the body is
+// read. The URL below is RELATIVE, deliberately — same origin means no preflight,
+// no key, and no second host to configure or keep alive.
+//
+// Failure stays a first-class path, exactly as it was under Jupiter: if the route
+// is unreachable or returns nothing usable, we serve the baked-in reference
+// prices and mark the reading CACHED. The UI must never blank, spin forever, or
+// render NaN.
+//
+// GONE FROM HERE: solUsd. Robinhood Chain has no SOL — it settles gas in ETH —
+// and a SOL/USD rate on this site would have been a number with nothing behind
+// it. Nothing outside this file read it.
+import { STOCKS, allSymbols } from './stocks'
 
 export type PriceSource = 'live' | 'cached'
 
 export interface PriceMap {
-  /** symbol -> USD price. Always fully populated for every xStock. */
+  /** symbol -> USD price. Always fully populated for every stock. */
   bySymbol: Record<string, number>
-  /** symbol -> 24h percent change. Only populated for live readings. */
-  change24h: Record<string, number>
   /**
-   * SOL/USD. Payouts are quoted in SOL, so this is the one price in the app
-   * that decides how much somebody is actually owed.
+   * symbol -> percent move since the underlying equity's previous close.
+   *
+   * Only populated for live readings, and legitimately EMPTY even then when
+   * Robinhood's equity endpoint is the half that failed. The tape treats a
+   * missing entry as "no data" and shows an em dash, which is the truth.
    */
-  solUsd: number
+  change24h: Record<string, number>
+  /** Symbols Robinhood currently reports as halted. Empty on a cached reading. */
+  halted: string[]
   source: PriceSource
   fetchedAt: number
 }
 
-const JUPITER_PRICE_URL = 'https://lite-api.jup.ag/price/v3'
-
-/** Wrapped SOL. Jupiter prices it on the same endpoint as every xStock. */
-export const SOL_MINT = 'So11111111111111111111111111111111111111112'
-
-/**
- * Last-resort SOL/USD, used only when the feed is unreachable.
- *
- * This number used to be the ONLY source: a hardcoded 180 in earnings.ts,
- * labelled a placeholder, rendered to the visitor as "at $180 / SOL". Live SOL
- * was $74.81 when that was found, so the payout page was overstating the rate
- * by 2.4x and therefore understating every payout by the same factor — on the
- * one page where a number means money.
- *
- * A fallback is still needed, because a dead price feed must not make the page
- * render NaN. But it is now a fallback, it is labelled CACHED on screen when it
- * is in use, and it is deliberately conservative.
- */
-export const SOL_USD_FALLBACK = 150
-
 export function referencePrices(): Record<string, number> {
   const out: Record<string, number> = {}
-  for (const s of XSTOCKS) out[s.symbol] = s.referencePrice
+  for (const s of STOCKS) out[s.symbol] = s.referencePrice
   return out
 }
 
@@ -51,10 +49,17 @@ export function cachedFallback(): PriceMap {
   return {
     bySymbol: referencePrices(),
     change24h: {},
-    solUsd: SOL_USD_FALLBACK,
+    halted: [],
     source: 'cached',
     fetchedAt: Date.now(),
   }
+}
+
+interface ProxyBody {
+  ok?: boolean
+  prices?: Record<string, unknown>
+  change?: Record<string, unknown>
+  halted?: unknown
 }
 
 /**
@@ -66,40 +71,41 @@ export async function fetchPrices(signal?: AbortSignal): Promise<PriceMap> {
   const change24h: Record<string, number> = {}
 
   try {
-    const url = `${JUPITER_PRICE_URL}?ids=${[...allMints(), SOL_MINT].join(',')}`
-    const res = await fetch(url, { signal })
+    const url = `/api/stock-prices?symbols=${allSymbols().join(',')}`
+    const res = await fetch(url, { signal, headers: { Accept: 'application/json' } })
     if (!res.ok) return cachedFallback()
 
-    const body = (await res.json()) as Record<
-      string,
-      { usdPrice?: number; priceChange24h?: number } | null
-    >
-    if (!body || typeof body !== 'object') return cachedFallback()
+    const body = (await res.json()) as ProxyBody | null
+    if (!body || typeof body !== 'object' || !body.prices) return cachedFallback()
 
     let resolved = 0
-    let solUsd = SOL_USD_FALLBACK
-    for (const [mint, entry] of Object.entries(body)) {
-      if (mint === SOL_MINT) {
-        const sol = entry?.usdPrice
-        // Not counted toward `resolved`: SOL is not an xStock, and a response
-        // carrying only SOL has still failed at the job this feed exists for.
-        if (typeof sol === 'number' && Number.isFinite(sol) && sol > 0) solUsd = sol
-        continue
-      }
-      const stock = stockByMint(mint)
-      const usd = entry?.usdPrice
-      if (!stock || typeof usd !== 'number' || !Number.isFinite(usd) || usd <= 0) continue
-      prices[stock.symbol] = usd
+    for (const [symbol, value] of Object.entries(body.prices)) {
+      // Only symbols this build already knows are accepted. The proxy is ours,
+      // but a price map keyed by whatever the upstream happened to return would
+      // let a renamed ticker introduce a desk the collection has never heard of.
+      if (!(symbol in prices)) continue
+      const usd = typeof value === 'number' ? value : Number(value)
+      if (!Number.isFinite(usd) || usd <= 0) continue
+      prices[symbol] = usd
       resolved++
-
-      const delta = entry?.priceChange24h
-      if (typeof delta === 'number' && Number.isFinite(delta)) change24h[stock.symbol] = delta
     }
 
     // A response that resolved nothing is a failed response, whatever its status.
     if (resolved === 0) return cachedFallback()
 
-    return { bySymbol: prices, change24h, solUsd, source: 'live', fetchedAt: Date.now() }
+    for (const [symbol, value] of Object.entries(body.change ?? {})) {
+      if (!(symbol in prices)) continue
+      const delta = typeof value === 'number' ? value : Number(value)
+      // Zero is a real reading here — a stock genuinely flat on the day — so
+      // this checks finiteness only, unlike the price guard above.
+      if (Number.isFinite(delta)) change24h[symbol] = delta
+    }
+
+    const halted = Array.isArray(body.halted)
+      ? body.halted.filter((s): s is string => typeof s === 'string' && s in prices)
+      : []
+
+    return { bySymbol: prices, change24h, halted, source: 'live', fetchedAt: Date.now() }
   } catch {
     return cachedFallback()
   }

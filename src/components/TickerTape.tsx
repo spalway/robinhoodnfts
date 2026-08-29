@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { buildLogo, LOGO_GRID } from '../lib/logos'
-import { XSTOCKS, type XStock } from '../lib/xstocks'
+import { STOCKS, type Stock } from '../lib/stocks'
 import { signedPct, usd } from '../lib/format'
 
 /**
@@ -89,7 +89,7 @@ function TapeItem({
   price,
   change,
 }: {
-  stock: XStock
+  stock: Stock
   price: number
   change: number
 }) {
@@ -103,7 +103,7 @@ function TapeItem({
       title={`${stock.name} — ${stock.sector}`}
     >
       <LogoTile symbol={stock.symbol} name={stock.name} />
-      {/* keep-case: the lowercase x in $NVDAx is the brand, not a typo. */}
+
       <span className="ui ui-10 keep-case text-ink">${stock.symbol}</span>
       <span className="mono text-[11px] tabular-nums text-ink">{usd(price)}</span>
       {delta === null ? (
@@ -130,7 +130,7 @@ export function TickerTape({
 }) {
   const reduced = usePrefersReducedMotion()
 
-  const items = XSTOCKS.map((stock) => (
+  const items = STOCKS.map((stock) => (
     <TapeItem
       key={stock.symbol}
       stock={stock}
@@ -148,7 +148,7 @@ export function TickerTape({
     return (
       <section
         className={`overflow-x-auto scrollbar-thin ${shell}`}
-        aria-label="xStock ticker"
+        aria-label="Robinhood stock token ticker"
       >
         <div className="flex w-max">{items}</div>
       </section>
@@ -161,7 +161,7 @@ export function TickerTape({
   return (
     <section
       className={`xnfts-tape overflow-hidden ${shell}`}
-      aria-label="xStock ticker"
+      aria-label="Robinhood stock token ticker"
       tabIndex={0}
     >
       <style href="xnfts-ticker-tape" precedence="medium">

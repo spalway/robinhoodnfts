@@ -76,10 +76,31 @@ export function Overview() {
           <Stat label="How It Works" value="4 steps" sub="hold, sign, verify, issue" />
         </div>
 
-        <p className="mt-4 max-w-3xl text-[11px] leading-relaxed text-ink-mute">
-          Hold {hold} $XAS and you can hire an xployee. The mint is one transfer to the project
-          wallet; the serial you draw comes from a shuffle fixed before the first mint, so the low
-          numbers stay genuinely rare.
+        {/* The two taglines, in the order they earn attention: the promise
+            leads, the mechanism follows. Both are the operator's own words,
+            edited for spelling only — a hero paragraph carrying "rariety"
+            undoes everything the rest of the page does to look like a desk.
+
+            The mint mechanics that used to sit here moved out entirely. They
+            were a prose restatement of the four numbered steps directly below,
+            and the steps say it better. */}
+        <p className="mt-4 max-w-3xl text-[15px] font-medium leading-snug text-ink">
+          Build your own corporation directly on Robinhood Chain. Get started by minting your
+          xployee.
+        </p>
+
+        <p className="mt-3 max-w-3xl text-[11px] leading-relaxed text-ink-mute">
+          Mint your own xployee — an on-chain worker agent that generates returns based on their
+          underlying assets, their <span className="text-ink">desks</span>. Higher rarity means
+          more desks. xployees can be contracted for a flat daily fee. You can also trade, buy and
+          sell your xployees with other holders on{' '}
+          <span className="keep-case text-ink">xNET</span>, the official xCorp look-up and
+          inventory directory. How do you plan on building your ideal on-chain corporation?
+        </p>
+
+        <p className="mt-3 max-w-3xl text-[11px] leading-relaxed text-ink-mute">
+          Hold {hold} $XAS to hire one. The serial you draw comes from a shuffle fixed before the
+          first mint, so the low numbers stay genuinely rare.
         </p>
 
         <ol className="mt-4 grid gap-4 border-t border-rule pt-4 text-[11px] leading-relaxed text-ink-mute md:grid-cols-4">

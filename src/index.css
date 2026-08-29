@@ -41,30 +41,53 @@
 
 @theme {
   /* ---- Ground and ink ---------------------------------------------------
-     Charcoal ground, light ink, acid accent. Every value is measured: the
-     palette inverted, so each accent that had been DARKENED for the tan was
-     suddenly at 2.5:1 and had to be lifted instead. Ratios are the reason for
-     the exact hex, not taste.
+     Charcoal ground, ROBINHOOD GREEN ink, acid accent.
+
+     The ink token used to be #ededed — a near-white that read as white
+     everywhere it landed: every heading, every number, every filled plate,
+     every frame. It is #CCFF00 now, which is what "replace white with Robinhood
+     green" actually reaches: the token, not a hundred call sites.
+
+     #CCFF00 IS ROBINHOOD'S GREEN, and it is worth writing down why, because it
+     does not look like one. The obvious candidate is #00C805 — the pure green
+     of the old logo and of a gain in the app — and that is what this token was
+     set to first. It is wrong. robinhood.com's live markup uses rgb(204,255,0)
+     thirty-two times and no other green at all: they rebranded to the acid
+     lime, and the emerald is legacy. Sampled, not remembered.
+
+     14.50:1 on the ground, and #111111 on IT is 16.07:1 — the highest-contrast
+     pair on the site, which is why a filled green plate carries near-black type
+     rather than the paper token.
+
+     The mutes stay NEUTRAL GREY on purpose. Green is the chrome — headings,
+     nav, plates, borders, figures. Running the footer's long paragraphs in
+     saturated lime would be legible by the numbers and punishing to read in
+     practice, and it would spend the brand colour on the one text nobody is
+     looking at.
      ------------------------------------------------------------------------ */
   --color-paper: #1c1c1c;
-  --color-ink: #ededed;            /* 14.56:1 on ground */
+  --color-ink: #ccff00;            /* 14.50:1 on ground, 12.85:1 on wash */
   --color-ink-mute: #a3a3a3;       /* 6.76:1 ground, 6.00:1 wash */
   --color-ink-faint: #8a8a8a;      /* 4.94:1 ground, 4.38:1 wash */
   --color-rule: #383838;           /* hairline, 1.45:1 */
   --color-wash: #262626;
 
-  /* The one loud colour. 14.50:1 on the ground, and black on IT is 16.07:1 —
-     which is why a filled accent control carries near-black type rather than
-     the paper token. */
+  /* Deliberately the SAME value as `ink` now, and kept as its own token rather
+     than collapsed into one. The accent is a role, not a colour: it marks the
+     mint CTA, and the CTA is loud because it is a FILLED plate in a page of
+     green type, not because it is a second hue. Two greens a step apart was
+     the arrangement while ink was white, and on a green site it read as a
+     rendering fault. If the brand ever splits the two, this is where. */
   --color-accent: #ccff00;
   --color-accent-ink: #111111;
 
-  /* Market colours, lifted for the dark ground. On the tan these were darkened
-     to #126832 / #ac3131 / #126a33; unchanged here they measure about 1.6:1 and
-     vanish. These read on paper / on wash. */
-  --color-up: #3ddc84;             /* 10.0 / 8.9 */
+  /* Market colours. `up` is the brand green itself rather than the old mint
+     #3ddc84, which on this ground was a third green competing with two others.
+     Red still carries the whole signal that matters — a loss is the thing that
+     has to jump out of a lime tape, and it does. */
+  --color-up: #ccff00;             /* 14.5 / 12.9 */
   --color-down: #ff6b6b;           /* 6.1 / 5.5 */
-  --color-money: #3ddc84;
+  --color-money: #ccff00;
 
   /* Rarity — the only other colour in the chrome. */
   --color-t1: #44af63;
@@ -183,8 +206,12 @@
 
      These sit on the element's border, and the art is sized to the CONTENT box
      inside it, so a frame never crops the character. */
+  /* Pinned to a neutral grey rather than following `ink`. UNCOMMON is the tier
+     that is supposed to look like nothing — that plainness is what makes the
+     other three read as special. Following the ink token would have handed the
+     commonest tier the brand's own green and inverted the whole ladder. */
   .frame-entry {
-    border: 3px solid var(--color-ink);
+    border: 3px solid #a3a3a3;
   }
 
   .frame-mid {
@@ -218,12 +245,12 @@
   }
 
   /* ---- Rarity cards ----------------------------------------------------
-     The card around the art picks up the same rarity, so the white gutter
+     The card around the art picks up the same rarity, so the gutter
      under a listing is tinted instead of blank. Kept at ~6% alpha: enough to
      tell three cards apart at a glance, faint enough that the black data on
      top is still the loudest thing in the cell.
 
-     UNCOMMON is deliberately absent — a plain white card is what makes the
+     UNCOMMON is deliberately absent — an untinted card is what makes the
      tinted ones read as special. */
   .card-mid {
     border-color: #1d84de;

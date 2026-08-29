@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "xNFTs — hire generative pixel xployees whose skills work xStocks desks on Solana.",
+  "description": "xCorp — hire generative pixel xployees whose desks track Robinhood Stock Tokens on Robinhood Chain.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

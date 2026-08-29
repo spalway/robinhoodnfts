@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { LOGO_GRID, buildLogo, knownSymbols, logoFor } from './logos'
-import { XSTOCKS } from './xstocks'
+import { STOCKS } from './stocks'
 
 /**
  * The marks are ASCII art, which means every defect in them is a typo that
@@ -20,7 +20,7 @@ describe('the art grids', () => {
     // Not all of them: an identity that is only a wordmark has no symbol to
     // draw. But if this ever drops far, the tape has quietly become monograms
     // again.
-    expect(marks.length).toBeGreaterThanOrEqual(XSTOCKS.length - 2)
+    expect(marks.length).toBeGreaterThanOrEqual(STOCKS.length - 2)
   })
 
   it.each(marks)('%s is exactly %d rows of %d', (symbol, spec) => {
@@ -72,7 +72,7 @@ describe('the art grids', () => {
 
 describe('buildLogo', () => {
   it('covers every xStock in the registry', () => {
-    for (const stock of XSTOCKS) {
+    for (const stock of STOCKS) {
       const spec = logoFor(stock.symbol)
       // The fallback is black-on-white initials. Reaching it means the ticker
       // shipped without a mark.
@@ -80,7 +80,7 @@ describe('buildLogo', () => {
     }
   })
 
-  it.each(XSTOCKS.map((s) => s.symbol))('%s rasterises to a full grid', (symbol) => {
+  it.each(STOCKS.map((s) => s.symbol))('%s rasterises to a full grid', (symbol) => {
     const grid = buildLogo(symbol)
     expect(grid).toHaveLength(LOGO_GRID)
     for (const row of grid) expect(row).toHaveLength(LOGO_GRID)
@@ -100,7 +100,7 @@ describe('buildLogo', () => {
   it('paints something other than ground', () => {
     // Guards the whole rasteriser: if the art loop stopped matching palette
     // characters, every tile would come back as a flat rectangle of bg.
-    for (const symbol of XSTOCKS.map((s) => s.symbol)) {
+    for (const symbol of STOCKS.map((s) => s.symbol)) {
       const spec = logoFor(symbol)
       const distinct = new Set(buildLogo(symbol).flat().filter(Boolean))
       expect(`${symbol} ${distinct.size}`).not.toBe(`${symbol} 1`)

@@ -173,7 +173,7 @@ function Header() {
           against the viewport edge. */}
       <div className="mx-auto flex max-w-[1440px] items-center gap-0 px-8 py-5">
         <div className="flex shrink-0 flex-col items-start pr-8">
-          <Link to="/" aria-label="xAGENTS home">
+          <Link to="/" aria-label="xCorp home">
             <Wordmark />
           </Link>
           <PoweredBy />
@@ -221,7 +221,7 @@ function PoweredBy() {
 
   return (
     <span className="mt-1.5 flex items-center gap-2 whitespace-nowrap text-[13px] font-medium leading-none text-ink">
-      Powered by xStocks
+      Powered by Robinhood Stocks
       {stale ? (
         <span className="ui ui-10 border border-ink px-1 py-0.5 leading-none" title="Live price feed unreachable — showing captured reference prices">
           Cached
@@ -237,8 +237,9 @@ function Footer() {
       <div className="mx-auto max-w-[1440px] px-6 py-8">
         <Wordmark size="sm" />
         <p className="mt-3 max-w-2xl text-[11px] leading-relaxed text-ink-mute">
-          A new NFT standard. Every xployee is assigned desks named after tokenized equities held on
-          Robinhood Chain. Hold $XAS, hire one, and take your place on xNET.
+          Build your own corporation directly on Robinhood Chain. Every xployee is assigned desks
+          named after Robinhood Stock Tokens — the tokenized equities that trade on the chain. Hold
+          $XAS, hire one, and take your place on xNET.
         </p>
         {/* This paragraph used to say every balance, hire and yield figure on the
             site was simulated. Two thirds of that is no longer true — a mint is a
@@ -246,10 +247,12 @@ function Footer() {
             it would have been inaccurate in the other direction. What has NOT
             changed is the yield model, so that is the part the sentence keeps. */}
         <p className="mt-3 max-w-2xl text-[10px] leading-relaxed text-ink-faint">
-          Mints are real Robinhood Chain transfers and ownership is verified on chain. Token addresses
-          and prices are live. APY, accrual and per-epoch figures are the collection's own model —
-          they are a property of the artwork, not a distribution, and nothing here pays out. No
-          on-chain program is deployed and xCorp are not an investment product.
+          Mints are real Robinhood Chain transfers and ownership is verified on chain. Desk tokens
+          and prices come from Robinhood's own public stock-token API. APY, accrual and per-epoch
+          figures are the collection's own model — they are a property of the artwork, not a
+          distribution, and nothing here pays out. No on-chain program is deployed, xployees are
+          not an investment product, and xCorp is not affiliated with or endorsed by Robinhood
+          Markets, Inc. Ticker names and marks identify the assets a desk tracks, nothing more.
         </p>
       </div>
     </footer>

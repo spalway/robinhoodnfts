@@ -25,7 +25,7 @@ export function xnftCa(): string {
   return getRuntimeConfig().xnftMint
 }
 
-/** X/Twitter handle only — no leading `@`, no URL. e.g. `xcorpnetwork`. */
+/** X/Twitter handle only — no leading `@`, no URL. e.g. `xcorpagents`. */
 export function supportHandle(): string {
   return getRuntimeConfig().supportHandle
 }
@@ -61,7 +61,7 @@ export function isTokenLaunched(): boolean {
  *
  * Supabase still wins whenever it has a value.
  */
-const DEFAULT_HANDLE = 'xcorpnetwork'
+const DEFAULT_HANDLE = 'xcorpagents'
 
 export function twitterHandle(): string | null {
   const configured = supportHandle().trim().replace(/^@+/, '')
